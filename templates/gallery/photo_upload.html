@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Photo Upload</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+<main>
+    <h1>Upload a Photo</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div>
+            {{ form.title.label_tag }} {{ form.title }}
+            {{ form.title.errors }}
+        </div>
+        <div>
+            {{ form.image.label_tag }} {{ form.image }}
+            {{ form.image.errors }}
+        </div>
+        <button type="submit">Upload</button>
+    </form>
+
+    <section class="camera-controls">
+        <h2>Use Laptop Camera</h2>
+        <div class="camera-actions">
+            <button type="button" id="start-camera">Start Camera</button>
+            <button type="button" id="capture-photo" disabled>Capture Photo</button>
+            <button type="button" id="stop-camera" disabled>Stop Camera</button>
+        </div>
+        <div class="camera-view" hidden>
+            <video id="camera-stream" autoplay playsinline></video>
+            <canvas id="capture-canvas" hidden></canvas>
+        </div>
+        <div id="captured-preview" class="captured-preview" hidden>
+            <p>Captured preview:</p>
+            <img id="captured-image" alt="Captured preview">
+            <button type="button" id="discard-photo">Discard Photo</button>
+        </div>
+        <p class="camera-hint">After capture the photo is attached to the form automatically.</p>
+    </section>
+
+    <section class="frame frame-single">
+        <h2>Frame 1: Featured Photo</h2>
+        {% if latest_photo %}
+            <a class="photo-link" href="{{ latest_photo.image.url }}">
+                <img src="{{ latest_photo.image.url }}" alt="{{ latest_photo.title|default:'Uploaded photo' }}">
+            </a>
+            {% if latest_photo.title %}<p>{{ latest_photo.title }}</p>{% endif %}
+            <p>Uploaded {{ latest_photo.uploaded_at }}</p>
+        {% else %}
+            <p>No photos yet. Upload one to fill this frame.</p>
+        {% endif %}
+    </section>
+
+    <section class="frame frame-double">
+        <h2>Frame 2: Two-Photo Display</h2>
+        {% if frame_two %}
+            <div class="photo-grid">
+                {% for photo in frame_two %}
+                    <article>
+                        <a class="photo-link" href="{{ photo.image.url }}">
+                            <img src="{{ photo.image.url }}" alt="{{ photo.title|default:'Uploaded photo' }}">
+                        </a>
+                        {% if photo.title %}<p>{{ photo.title }}</p>{% endif %}
+                        <p>Uploaded {{ photo.uploaded_at }}</p>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Add more photos to populate this frame.</p>
+        {% endif %}
+    </section>
+
+    {% if other_photos %}
+        <section class="frame frame-list">
+            <h2>More Photos</h2>
+            <ul>
+                {% for photo in other_photos %}
+                    <li>
+                        <a class="photo-link" href="{{ photo.image.url }}">
+                            <img src="{{ photo.image.url }}" alt="{{ photo.title|default:'Uploaded photo' }}">
+                        </a>
+                        {% if photo.title %}<p>{{ photo.title }}</p>{% endif %}
+                        <p>Uploaded {{ photo.uploaded_at }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+</main>
+<script>
+(function () {
+    const startButton = document.getElementById('start-camera');
+    const captureButton = document.getElementById('capture-photo');
+    const stopButton = document.getElementById('stop-camera');
+    const discardButton = document.getElementById('discard-photo');
+    const video = document.getElementById('camera-stream');
+    const canvas = document.getElementById('capture-canvas');
+    const previewWrapper = document.getElementById('captured-preview');
+    const previewImage = document.getElementById('captured-image');
+    const cameraView = document.querySelector('.camera-view');
+    const fileInput = document.getElementById('id_image');
+    let stream = null;
+
+    function setButtons({ camera, capture, stop }) {
+        startButton.disabled = !camera;
+        captureButton.disabled = !capture;
+        stopButton.disabled = !stop;
+    }
+
+    function showPreview(url) {
+        previewImage.src = url;
+        previewWrapper.hidden = false;
+    }
+
+    function clearPreview() {
+        previewWrapper.hidden = true;
+        previewImage.src = '';
+        const data = new DataTransfer();
+        fileInput.files = data.files;
+    }
+
+    async function startCamera() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            cameraView.hidden = false;
+            setButtons({ camera: false, capture: true, stop: true });
+        } catch (err) {
+            alert('Unable to access camera. Please check permissions.');
+            console.error(err);
+        }
+    }
+
+    function stopCamera() {
+        if (stream) {
+            stream.getTracks().forEach((track) => track.stop());
+            stream = null;
+        }
+        video.srcObject = null;
+        cameraView.hidden = true;
+        setButtons({ camera: true, capture: false, stop: false });
+    }
+
+    function capturePhoto() {
+        if (!stream || !video.videoWidth) {
+            return;
+        }
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                return;
+            }
+            const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const file = new File([blob], `capture-${timeStamp}.jpg`, { type: 'image/jpeg' });
+            const data = new DataTransfer();
+            data.items.add(file);
+            fileInput.files = data.files;
+            showPreview(URL.createObjectURL(blob));
+        }, 'image/jpeg', 0.9);
+    }
+
+    startButton.addEventListener('click', () => {
+        clearPreview();
+        startCamera();
+    });
+
+    captureButton.addEventListener('click', capturePhoto);
+    stopButton.addEventListener('click', () => {
+        stopCamera();
+    });
+    discardButton.addEventListener('click', () => {
+        clearPreview();
+    });
+
+    window.addEventListener('beforeunload', stopCamera);
+})();
+</script>
+</body>
+</html>
+
