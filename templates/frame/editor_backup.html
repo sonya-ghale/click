@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frame Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-pink-50 min-h-screen text-slate-800">
+  <main class="max-w-5xl mx-auto px-4 py-8 md:py-12">
+    <div class="flex items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold">{{ layout.title }}</h1>
+        <p class="text-sm text-slate-600 mt-1">{{ layout.subtitle }}</p>
+      </div>
+      <a href="{% url 'gallery:frames' %}" class="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-white">
+        Back to frames
+      </a>
+    </div>
+
+    <section class="bg-white rounded-2xl border border-slate-200 p-4 md:p-6 shadow-sm">
+      {% if layout.is_freestyle %}
+        <div class="{{ layout.container_class }}">
+          <label class="cursor-pointer absolute top-6 left-5 md:left-10 -rotate-6">
+            <input class="hidden image-input" type="file" accept="image/*" />
+            <div class="{{ layout.slot_class }} rounded-xl border-2 border-dashed border-pink-300 bg-pink-50 overflow-hidden frame-slot"></div>
+          </label>
+          <label class="cursor-pointer absolute bottom-6 right-5 md:right-10 rotate-6">
+            <input class="hidden image-input" type="file" accept="image/*" />
+            <div class="{{ layout.slot_class }} rounded-xl border-2 border-dashed border-pink-300 bg-pink-50 overflow-hidden frame-slot"></div>
+          </label>
+        </div>
+      {% else %}
+        <div class="{{ layout.container_class }}">
+          {% for i in layout.indexes %}
+            <label class="cursor-pointer block">
+              <input class="hidden image-input" type="file" accept="image/*" />
+              <div class="{{ layout.slot_class }} rounded-xl border-2 border-dashed border-pink-300 bg-pink-50 overflow-hidden frame-slot"></div>
+            </label>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+
+    <p class="mt-4 text-xs text-slate-500">
+      Tap any frame box to add an image.
+    </p>
+  </main>
+
+  <script>
+    const inputs = document.querySelectorAll(".image-input");
+
+    function renderPlaceholder(slot) {
+      slot.innerHTML = `
+        <div class="w-full h-full flex items-center justify-center text-pink-500 font-semibold text-sm">
+          Click to add photo
+        </div>
+      `;
+    }
+
+    document.querySelectorAll(".frame-slot").forEach(renderPlaceholder);
+
+    inputs.forEach((input) => {
+      input.addEventListener("change", (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+
+        const slot = input.parentElement.querySelector(".frame-slot");
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          slot.innerHTML = `<img src="${e.target.result}" alt="Selected frame image" class="w-full h-full object-cover" />`;
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
+</body>
+</html>

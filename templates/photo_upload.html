@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>ScrapbookCam - Choose Your Layout</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-highest": "#f1eba6",
+              "surface-container-low": "#fffadf",
+              "on-error-container": "#510017",
+              "primary-dim": "#973069",
+              "on-secondary": "#ffffff",
+              "tertiary-fixed": "#c29fff",
+              "on-secondary-container": "#1c5d3b",
+              "on-primary": "#ffffff",
+              "error": "#c12048",
+              "surface-container-high": "#f7f0b0",
+              "on-secondary-fixed-variant": "#276744",
+              "on-tertiary-fixed-variant": "#47247e",
+              "surface-variant": "#f1eba6",
+              "secondary-fixed-dim": "#a1e3b7",
+              "primary-fixed": "#f980bc",
+              "inverse-primary": "#f980bc",
+              "surface-dim": "#ece59e",
+              "surface-tint": "#a73d76",
+              "primary-fixed-dim": "#e973ae",
+              "tertiary-container": "#c29fff",
+              "tertiary-fixed-dim": "#b592f2",
+              "outline": "#868256",
+              "error-dim": "#a70138",
+              "surface-container": "#fcf6b9",
+              "error-container": "#f74b6d",
+              "on-primary-container": "#570037",
+              "on-primary-fixed-variant": "#670142",
+              "inverse-on-surface": "#a39f70",
+              "on-surface-variant": "#69663c",
+              "surface": "#fffbff",
+              "on-tertiary-container": "#3e1975",
+              "on-background": "#3c3914",
+              "surface-bright": "#fffbff",
+              "primary": "#a73d76",
+              "on-error": "#ffffff",
+              "tertiary-dim": "#6746a0",
+              "secondary-dim": "#246441",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#3c3914",
+              "primary-container": "#f980bc",
+              "secondary-container": "#aff1c5",
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed": "#004a2a",
+              "on-tertiary-fixed": "#22004f",
+              "secondary-fixed": "#aff1c5",
+              "inverse-surface": "#100f00",
+              "secondary": "#31704c",
+              "outline-variant": "#c0bb8a",
+              "on-primary-fixed": "#200012",
+              "tertiary": "#7452ad",
+              "background": "#fffbff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {
+              "DEFAULT": "1rem",
+              "lg": "1.5rem",
+              "xl": "2rem",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+    <style>
+        .dot-pattern {
+            background-image: radial-gradient(#f1eba6 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .sticker-shadow {
+            box-shadow: 0px 4px 16px rgba(60, 57, 20, 0.04);
+        }
+        .chunky-button-shadow {
+            box-shadow: 0px 3px 0px #a73d76;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+        .frame-card {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .frame-card:hover {
+            transform: translateY(-4px);
+        }
+        .frame-card.active {
+            border-color: #a73d76;
+            box-shadow: 0px 6px 24px rgba(167, 61, 118, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background min-h-screen dot-pattern">
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-surface-container-highest/50">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+        <h1 class="text-xl font-extrabold text-[#a73d76] font-headline tracking-tight">ScrapbookCam</h1>
+        <div class="flex items-center gap-4">
+            <button class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center hover:opacity-80 transition-opacity border border-outline-variant/30 overflow-hidden" type="button">
+                <img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3AHueV8jHp1qiqC5ASjq_9NILUscKKn11v1VtDBXiSEgCMtzxJt8woQuKulkvwn701phtv_yzdb6kEP-NJOy2xuxAX0o4yRoGFVrQOuodmKQ2EA9lAejUtPtmU6NrHoIwWt1yaXch6sdBg0-L9Ypuq89ey9UDwM8_hbFRE-4diBnUqkpKgR2ccyIl9mmkqUl2hhIHriK_qTe1s2IZ_uftM_NhAvYU0Xr_W30ki1ViNkHBYosGG1BctZR3aZHL89SizrPYcZdQm6bE">
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 pt-16">
+    <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-extrabold text-on-background font-headline tracking-tight mb-3">Choose Your Frame</h2>
+        <p class="font-label text-on-surface-variant text-sm tracking-tight max-w-sm mx-auto">Pick a layout to start your creative journey.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+        <button class="frame-card group bg-white border border-outline-variant/20 rounded-2xl p-6 sticker-shadow cursor-pointer hover:border-primary/40 text-left" type="button" data-layout="strip-4">
+            <div class="aspect-[4/5] bg-surface-container-low rounded-xl mb-6 flex flex-col items-center justify-center gap-2.5 p-10 border border-outline-variant/30">
+                <div class="w-full aspect-[4/1] bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="w-full aspect-[4/1] bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="w-full aspect-[4/1] bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="w-full aspect-[4/1] bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+            </div>
+            <div class="text-center">
+                <h3 class="font-headline font-bold text-lg text-on-surface">Photo Strip</h3>
+                <p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mt-1">2x6" • 4 Photos</p>
+            </div>
+        </button>
+
+        <button class="frame-card group bg-white border border-outline-variant/20 rounded-2xl p-6 sticker-shadow cursor-pointer hover:border-primary/40 text-left" type="button" data-layout="square-4">
+            <div class="aspect-[4/5] bg-surface-container-low rounded-xl mb-6 grid grid-cols-2 gap-2.5 p-10 border border-outline-variant/30">
+                <div class="aspect-square bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="aspect-square bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="aspect-square bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="aspect-square bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+            </div>
+            <div class="text-center">
+                <h3 class="font-headline font-bold text-lg text-on-surface">Square 2x2</h3>
+                <p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mt-1">4x6" • 4 Photos</p>
+            </div>
+        </button>
+
+        <button class="frame-card group bg-white border border-outline-variant/20 rounded-2xl p-6 sticker-shadow cursor-pointer hover:border-primary/40 text-left" type="button" data-layout="solo-1">
+            <div class="aspect-[4/5] bg-surface-container-low rounded-xl mb-6 flex items-center justify-center p-10 border border-outline-variant/30">
+                <div class="w-full h-full bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+            </div>
+            <div class="text-center">
+                <h3 class="font-headline font-bold text-lg text-on-surface">Solo Star</h3>
+                <p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mt-1">4x6" • 1 Photo</p>
+            </div>
+        </button>
+
+        <button class="frame-card group bg-white border border-outline-variant/20 rounded-2xl p-6 sticker-shadow cursor-pointer hover:border-primary/40 text-left" type="button" data-layout="grid-6">
+            <div class="aspect-[4/5] bg-surface-container-low rounded-xl mb-6 grid grid-cols-2 grid-rows-3 gap-2 p-10 border border-outline-variant/30">
+                <div class="bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+            </div>
+            <div class="text-center">
+                <h3 class="font-headline font-bold text-lg text-on-surface">Gallery Mix</h3>
+                <p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mt-1">4x6" • 6 Photos</p>
+            </div>
+        </button>
+
+        <button class="frame-card group bg-white border border-outline-variant/20 rounded-2xl p-6 sticker-shadow cursor-pointer hover:border-primary/40 text-left" type="button" data-layout="duo-2">
+            <div class="aspect-[4/5] bg-surface-container-low rounded-xl mb-6 flex flex-col gap-3 p-10 border border-outline-variant/30">
+                <div class="w-full aspect-[3/2] bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+                <div class="w-full aspect-[3/2] bg-white rounded-sm border border-outline-variant/10 shadow-sm"></div>
+            </div>
+            <div class="text-center">
+                <h3 class="font-headline font-bold text-lg text-on-surface">Duo Story</h3>
+                <p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mt-1">4x6" • 2 Photos</p>
+            </div>
+        </button>
+
+        <button class="frame-card group bg-white border border-outline-variant/20 rounded-2xl p-6 sticker-shadow cursor-pointer hover:border-primary/40 text-left" type="button" data-layout="freestyle">
+            <div class="aspect-[4/5] bg-surface-container-low rounded-xl mb-6 relative p-10 border border-outline-variant/30 overflow-hidden">
+                <div class="absolute top-10 left-8 w-24 h-24 bg-white rounded-sm border border-outline-variant/10 shadow-sm rotate-6"></div>
+                <div class="absolute bottom-12 right-8 w-24 h-24 bg-white rounded-sm border border-outline-variant/10 shadow-sm -rotate-12"></div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20">
+                    <span class="material-symbols-outlined text-4xl">brush</span>
+                </div>
+            </div>
+            <div class="text-center">
+                <h3 class="font-headline font-bold text-lg text-on-surface">Freestyle</h3>
+                <p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mt-1">Custom Layout</p>
+            </div>
+        </button>
+    </div>
+
+    <div class="flex flex-col items-center gap-6 pb-16">
+        <a href="{% url 'gallery:photo_upload' %}" id="continue-button" class="bg-primary text-on-primary font-headline font-bold text-base px-10 py-3.5 rounded-full chunky-button-shadow hover:translate-y-0.5 active:translate-y-1 transition-all inline-block">
+            Continue to Camera
+        </a>
+        <div class="flex items-center gap-2 text-on-surface-variant/70 font-label text-[11px] uppercase tracking-wider">
+            <span class="material-symbols-outlined text-xs">info</span>
+            You can change filters after the shoot
+        </div>
+    </div>
+</main>
+
+<script>
+    (function () {
+        const cards = document.querySelectorAll("[data-layout]");
+        const continueButton = document.getElementById("continue-button");
+        const key = "scrapbook_selected_layout";
+        let selected = localStorage.getItem(key) || "strip-4";
+
+        function applySelection(value) {
+            selected = value;
+            cards.forEach((card) => {
+                const active = card.getAttribute("data-layout") === value;
+                card.classList.toggle("active", active);
+            });
+            localStorage.setItem(key, value);
+            if (continueButton) {
+                continueButton.href = "{% url 'gallery:photo_upload' %}?layout=" + encodeURIComponent(value);
+            }
+        }
+
+        cards.forEach((card) => {
+            card.addEventListener("click", () => {
+                applySelection(card.getAttribute("data-layout"));
+            });
+        });
+
+        applySelection(selected);
+    })();
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Photo Upload</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&family=DM+Sans:ital,opsz@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        .booth-root { font-family: "DM Sans", system-ui, sans-serif; }
+        .booth-title { font-family: "Fraunces", Georgia, serif; }
+        .booth-strip {
+            background: linear-gradient(180deg, #fffefb 0%, #f5f0e8 48%, #ebe4d8 100%);
+            box-shadow: 0 25px 50px -12px rgba(44, 36, 32, 0.35), inset 0 1px 0 rgba(255,255,255,0.85);
+        }
+        .booth-perf {
+            height: 10px;
+            margin: 0.35rem 0;
+            background: repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(120,100,90,0.2) 5px, rgba(120,100,90,0.2) 7px);
+            border-radius: 2px;
+            opacity: 0.85;
+        }
+        .booth-slot { transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.3s ease; }
+        .booth-slot[data-booth-hidden="1"] {
+            display: none;
+        }
+        .booth-frame {
+            box-shadow: 0 4px 14px rgba(44, 36, 32, 0.12), 0 0 0 1px rgba(44, 36, 32, 0.06);
+        }
+        .layout-pick[aria-pressed="true"] {
+            background: linear-gradient(135deg, #be185d 0%, #9d174d 100%);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(190, 24, 93, 0.35);
+        }
+        button.lightbox-trigger {
+            font: inherit;
+            color: inherit;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen py-8 px-4 booth-root">
+    <main class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Upload a Photo</h1>
+        
+        <form method="post" enctype="multipart/form-data" class="bg-white rounded-lg shadow-md p-6 mb-8">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2">{{ form.title.label_tag }}</label>
+                {{ form.title }}
+                {{ form.title.errors }}
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2">{{ form.image.label_tag }}</label>
+                {{ form.image }}
+                {{ form.image.errors }}
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
+                Upload
+            </button>
+        </form>
+
+
+        <section class="relative overflow-hidden rounded-3xl mb-10 shadow-xl text-stone-800"
+            style="background: radial-gradient(1200px 500px at 10% -20%, rgba(251, 207, 232, 0.55), transparent 55%), radial-gradient(900px 400px at 100% 0%, rgba(253, 224, 200, 0.5), transparent 50%), linear-gradient(165deg, #1c1917 0%, #292524 40%, #44403c 100%);">
+            <div class="absolute inset-0 opacity-[0.07] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+            <div class="relative p-6 md:p-8 max-w-lg mx-auto">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-center sm:text-left">
+                    <div class="min-w-0">
+                        <p class="text-rose-100/90 text-xs tracking-[0.35em] uppercase mb-1">Photo booth</p>
+                        <h2 class="booth-title text-2xl md:text-3xl text-white drop-shadow-sm">Your strip</h2>
+                        <p class="text-stone-400 text-sm mt-2 max-w-xs mx-auto sm:mx-0">Open to pick 1–4 frames and view photos full size on tap.</p>
+                    </div>
+                    <button type="button" id="booth-toggle" class="shrink-0 mx-auto sm:mx-0 px-6 py-3 rounded-full text-sm font-medium bg-rose-500 text-white hover:bg-rose-400 border border-rose-400/50 shadow-lg shadow-rose-900/30 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-200" aria-expanded="false" aria-controls="booth-panel">
+                        Open booth strip
+                    </button>
+                </div>
+
+                <div id="booth-panel" class="hidden mt-8 pt-8 border-t border-white/15">
+                    <p class="text-center text-stone-300 text-sm mb-4 max-w-sm mx-auto">Pick 1–4 frames. <strong class="text-rose-100/90">Tap the strip</strong> or press <kbd class="px-1 rounded bg-white/10">Enter</kbd> — with one frame the shot fires right after the camera opens; with more, each tap fills the next slot.</p>
+
+                    <div class="flex flex-wrap justify-center gap-2 mb-6" id="booth-layout-picker" role="group" aria-label="Strip layout">
+                        <button type="button" class="layout-pick px-4 py-2 rounded-full text-sm font-medium bg-white/10 text-rose-50 border border-white/20 hover:bg-white/15 transition" data-strip="1" aria-pressed="false">1 frame</button>
+                        <button type="button" class="layout-pick px-4 py-2 rounded-full text-sm font-medium bg-white/10 text-rose-50 border border-white/20 hover:bg-white/15 transition" data-strip="2" aria-pressed="false">2 frames</button>
+                        <button type="button" class="layout-pick px-4 py-2 rounded-full text-sm font-medium bg-white/10 text-rose-50 border border-white/20 hover:bg-white/15 transition" data-strip="3" aria-pressed="false">3 frames</button>
+                        <button type="button" class="layout-pick px-4 py-2 rounded-full text-sm font-medium bg-white/10 text-rose-50 border border-white/20 hover:bg-white/15 transition" data-strip="4" aria-pressed="true">4 frames</button>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-2 mb-5" id="booth-dl-row">
+                        <button type="button" id="download-strip-png" class="px-4 py-2 rounded-full text-sm font-medium bg-white/15 text-white border border-white/25 hover:bg-white/25 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>Download strip · PNG</button>
+                        <button type="button" id="download-strip-jpg" class="px-4 py-2 rounded-full text-sm font-medium bg-white/15 text-white border border-white/25 hover:bg-white/25 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>Download strip · JPG</button>
+                        <button type="button" id="download-strip-jpeg" class="px-4 py-2 rounded-full text-sm font-medium bg-white/15 text-white border border-white/25 hover:bg-white/25 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>Download strip · JPEG</button>
+                    </div>
+                    <p class="text-center text-stone-500 text-xs mb-4">JPG and JPEG use the same compression; filenames differ for picky print shops.</p>
+
+                    <div class="booth-strip rounded-2xl p-5 md:p-6 border border-stone-200/80 cursor-pointer select-none touch-manipulation" id="booth-strip" role="button" tabindex="0" aria-label="Photo booth strip — tap to open camera and capture">
+                        <div id="booth-slots-mount"></div>
+                        <p class="booth-title text-center text-stone-500 text-lg mt-4 tracking-wide pointer-events-none">click · booth</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="frame frame-single bg-white rounded-lg shadow-md p-6 mb-8 border-2 border-dashed border-gray-300">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Frame 1: Featured Photo</h2>
+            {% if latest_photo %}
+                <button type="button" class="lightbox-trigger photo-link block w-full text-left cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded" data-lightbox-src="{{ latest_photo.image.url }}" data-lightbox-alt="{{ latest_photo.title|default:'Uploaded photo' }}">
+                    <img src="{{ latest_photo.image.url }}" alt="{{ latest_photo.title|default:'Uploaded photo' }}" class="w-full h-auto border rounded pointer-events-none" loading="lazy" decoding="async">
+                </button>
+                {% if latest_photo.title %}<p class="text-gray-700 mt-2">{{ latest_photo.title }}</p>{% endif %}
+                <p class="text-gray-500 text-sm">Uploaded {{ latest_photo.uploaded_at }}</p>
+            {% else %}
+                <p class="text-gray-500">No photos yet. Upload one to fill this frame.</p>
+            {% endif %}
+        </section>
+
+        <section class="frame frame-double bg-white rounded-lg shadow-md p-6 mb-8 border-2 border-dashed border-gray-300">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Frame 2: Two-Photo Display</h2>
+            {% if frame_two %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for photo in frame_two %}
+                        <article class="text-center">
+                            <button type="button" class="lightbox-trigger photo-link block w-full cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded" data-lightbox-src="{{ photo.image.url }}" data-lightbox-alt="{{ photo.title|default:'Uploaded photo' }}">
+                                <img src="{{ photo.image.url }}" alt="{{ photo.title|default:'Uploaded photo' }}" class="w-full h-auto border rounded pointer-events-none" loading="lazy" decoding="async">
+                            </button>
+                            {% if photo.title %}<p class="text-gray-700 mt-2">{{ photo.title }}</p>{% endif %}
+                            <p class="text-gray-500 text-sm">Uploaded {{ photo.uploaded_at }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500">Add more photos to populate this frame.</p>
+            {% endif %}
+        </section>
+
+        {% if other_photos %}
+            <section class="frame frame-list bg-white rounded-lg shadow-md p-6 border-2 border-dashed border-gray-300">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">More Photos</h2>
+                <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 list-none p-0">
+                    {% for photo in other_photos %}
+                        <li class="text-center">
+                            <button type="button" class="lightbox-trigger photo-link block w-full cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded" data-lightbox-src="{{ photo.image.url }}" data-lightbox-alt="{{ photo.title|default:'Uploaded photo' }}">
+                                <img src="{{ photo.image.url }}" alt="{{ photo.title|default:'Uploaded photo' }}" class="w-full h-auto border rounded pointer-events-none" loading="lazy" decoding="async">
+                            </button>
+                            {% if photo.title %}<p class="text-gray-700 mt-2">{{ photo.title }}</p>{% endif %}
+                            <p class="text-gray-500 text-sm">Uploaded {{ photo.uploaded_at }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endif %}
+    </main>
+
+    {{ booth_slots_data|json_script:"booth-slots-data" }}
+
+    <div id="lightbox" class="hidden fixed inset-0 z-[100]" role="dialog" aria-modal="true" aria-label="Enlarged photo">
+        <div id="lightbox-backdrop" class="absolute inset-0 z-[100] bg-black/88 cursor-zoom-out"></div>
+        <div class="absolute inset-0 z-[102] flex items-center justify-center p-4 pointer-events-none">
+            <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[min(100vh-2rem,90vh)] object-contain rounded-lg shadow-2xl pointer-events-auto">
+        </div>
+        <button type="button" id="lightbox-close" class="absolute top-3 right-3 z-[103] w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white text-2xl leading-none border border-white/30 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white" aria-label="Close">&times;</button>
+    </div>
+
+    <script>
+    (function () {
+        const startButton = document.getElementById('start-camera');
+        const captureButton = document.getElementById('capture-photo');
+        const stopButton = document.getElementById('stop-camera');
+        const discardButton = document.getElementById('discard-photo');
+        const videoMain = document.getElementById('camera-stream');
+        const videoBooth = document.getElementById('booth-camera-video');
+        const canvas = document.getElementById('capture-canvas');
+        const previewWrapper = document.getElementById('captured-preview');
+        const previewImage = document.getElementById('captured-image');
+        const cameraView = document.querySelector('.camera-view');
+        const boothCameraWrap = document.getElementById('booth-camera-wrap');
+        const boothPanel = document.getElementById('booth-panel');
+        const fileInput = document.getElementById('id_image');
+        const timerInput = document.getElementById('timer-seconds');
+        const timedCaptureButton = document.getElementById('timed-capture');
+        const countdownDisplay = document.getElementById('countdown-display');
+        let stream = null;
+        let countdownTimer = null;
+
+        function syncBoothPreview() {
+            if (!stream || !boothCameraWrap || !boothPanel) return;
+            if (!boothPanel.classList.contains('hidden')) {
+                boothCameraWrap.classList.remove('hidden');
+            }
+        }
+
+        function isVideoPaintable(v) {
+            if (!v) return false;
+            let el = v;
+            while (el) {
+                const st = getComputedStyle(el);
+                if (st.display === 'none' || st.visibility === 'hidden') return false;
+                el = el.parentElement;
+            }
+            const r = v.getBoundingClientRect();
+            return r.width >= 2 && r.height >= 2;
+        }
+
+        function pickVideoForGrab() {
+            const boothWrap = document.getElementById('booth-camera-wrap');
+            const panelOpen = boothPanel && !boothPanel.classList.contains('hidden');
+            const boothPreviewOn = panelOpen && boothWrap && !boothWrap.classList.contains('hidden');
+            const order = boothPreviewOn ? [videoBooth, videoMain] : [videoMain, videoBooth];
+            const list = order.filter(Boolean);
+            for (let i = 0; i < list.length; i += 1) {
+                const v = list[i];
+                try {
+                    if (v.readyState >= 2 && v.videoWidth >= 2 && v.videoHeight >= 2 && isVideoPaintable(v)) {
+                        return v;
+                    }
+                } catch (err) {}
+            }
+            for (let j = 0; j < list.length; j += 1) {
+                const v2 = list[j];
+                try {
+                    if (v2.readyState >= 2 && v2.videoWidth >= 2 && v2.videoHeight >= 2) {
+                        return v2;
+                    }
+                } catch (err2) {}
+            }
+            return null;
+        }
+
+        function attachStream() {
+            if (!stream) return;
+            if (videoMain) videoMain.srcObject = stream;
+            if (videoBooth) videoBooth.srcObject = stream;
+            [videoMain, videoBooth].forEach((v) => {
+                if (v && v.srcObject) {
+                    v.play().catch(() => {});
+                }
+            });
+            syncBoothPreview();
+        }
+
+        function setButtons({ camera, capture, stop, timedCapture = false }) {
+            if (startButton) startButton.disabled = !camera;
+            if (captureButton) captureButton.disabled = !capture;
+            if (stopButton) stopButton.disabled = !stop;
+            if (timedCaptureButton) {
+                timedCaptureButton.disabled = !timedCapture;
+                timedCaptureButton.textContent = 'Timed Capture';
+            }
+        }
+
+        function showCountdown(seconds) {
+            if (!countdownDisplay) return;
+            countdownDisplay.textContent = `Capturing in ${seconds}...`;
+            countdownDisplay.classList.remove('hidden');
+        }
+
+        function hideCountdown() {
+            if (countdownDisplay) countdownDisplay.classList.add('hidden');
+        }
+
+        function startTimedCapture() {
+            const seconds = parseInt(timerInput && timerInput.value, 10) || 3;
+            let remaining = seconds;
+            showCountdown(remaining);
+            if (timedCaptureButton) {
+                timedCaptureButton.disabled = true;
+                timedCaptureButton.textContent = 'Cancel';
+            }
+            countdownTimer = setInterval(() => {
+                remaining -= 1;
+                if (remaining <= 0) {
+                    clearInterval(countdownTimer);
+                    countdownTimer = null;
+                    hideCountdown();
+                    capturePhotoUpload();
+                } else {
+                    showCountdown(remaining);
+                }
+            }, 1000);
+        }
+
+        function cancelTimedCapture() {
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+                countdownTimer = null;
+            }
+            hideCountdown();
+            setButtons({ camera: false, capture: true, stop: true, timedCapture: true });
+        }
+
+        function showPreview(url) {
+            if (!previewWrapper || !previewImage) return;
+            previewImage.src = url;
+            previewWrapper.classList.remove('hidden');
+        }
+
+        function clearPreview() {
+            if (previewWrapper) previewWrapper.classList.add('hidden');
+            if (previewImage) previewImage.src = '';
+            if (fileInput) {
+                const data = new DataTransfer();
+                fileInput.files = data.files;
+            }
+        }
+
+        function waitCaptureVideoReady() {
+            return new Promise((resolve) => {
+                if (pickVideoForGrab()) {
+                    resolve();
+                    return;
+                }
+                const videos = [videoBooth, videoMain].filter(Boolean);
+                const tryDone = () => {
+                    if (pickVideoForGrab()) resolve();
+                };
+                videos.forEach((v) => {
+                    v.addEventListener('loadeddata', tryDone, { once: true });
+                    v.addEventListener('playing', tryDone, { once: true });
+                    v.addEventListener('canplay', tryDone, { once: true });
+                });
+                setTimeout(resolve, 4000);
+            });
+        }
+
+        async function startCamera({ showMainView = false } = {}) {
+            if (stream) {
+                attachStream();
+                if (showMainView && cameraView) cameraView.classList.remove('hidden');
+                syncBoothPreview();
+                setButtons({ camera: false, capture: true, stop: true, timedCapture: true });
+                return;
+            }
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+                attachStream();
+                if (showMainView && cameraView) cameraView.classList.remove('hidden');
+                syncBoothPreview();
+                setButtons({ camera: false, capture: true, stop: true, timedCapture: true });
+                await waitCaptureVideoReady();
+            } catch (err) {
+                alert('Unable to access camera. Please check permissions.');
+                console.error(err);
+            }
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach((track) => track.stop());
+                stream = null;
+            }
+            [videoMain, videoBooth].forEach((v) => {
+                if (v) v.srcObject = null;
+            });
+            if (cameraView) cameraView.classList.add('hidden');
+            if (boothCameraWrap) boothCameraWrap.classList.add('hidden');
+            hideCountdown();
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+                countdownTimer = null;
+            }
+            setButtons({ camera: true, capture: false, stop: false, timedCapture: false });
+        }
+
+        function grabFrameToBlob(quality, callback) {
+            const v = pickVideoForGrab();
+            if (!v) {
+                callback(null);
+                return;
+            }
+            const draw = () => {
+                const src = pickVideoForGrab();
+                if (!src || src.videoWidth < 2 || src.videoHeight < 2) {
+                    callback(null);
+                    return;
+                }
+                canvas.width = src.videoWidth;
+                canvas.height = src.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(src, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob((blob) => callback(blob || null), 'image/jpeg', quality);
+            };
+            if (typeof v.requestVideoFrameCallback === 'function') {
+                v.requestVideoFrameCallback(() => draw());
+            } else {
+                requestAnimationFrame(draw);
+            }
+        }
+
+        function capturePhotoUpload() {
+            grabFrameToBlob(0.9, (blob) => {
+                if (!blob || !fileInput) return;
+                const timeStamp = new Date().toISOString().replace(/[:.]/g, '-');
+                const file = new File([blob], `capture-${timeStamp}.jpg`, { type: 'image/jpeg' });
+                const data = new DataTransfer();
+                data.items.add(file);
+                fileInput.files = data.files;
+                showPreview(URL.createObjectURL(blob));
+            });
+        }
+
+        window.__clickBoothCamera = {
+            startCamera,
+            stopCamera,
+            grabFrameToBlob,
+            isStreaming: () => !!stream,
+            syncBoothPreview,
+        };
+
+        if (startButton) {
+            startButton.addEventListener('click', () => {
+                clearPreview();
+                startCamera({ showMainView: true });
+            });
+        }
+        if (captureButton) captureButton.addEventListener('click', capturePhotoUpload);
+        if (timedCaptureButton) {
+            timedCaptureButton.addEventListener('click', () => {
+                if (countdownTimer) cancelTimedCapture();
+                else startTimedCapture();
+            });
+        }
+        if (stopButton) stopButton.addEventListener('click', stopCamera);
+        if (discardButton) discardButton.addEventListener('click', clearPreview);
+
+        window.addEventListener('beforeunload', stopCamera);
+    })();
+
+    (function () {
+        const dataEl = document.getElementById('booth-slots-data');
+        let initial = [null, null, null, null];
+        try {
+            if (dataEl && dataEl.textContent) {
+                const parsed = JSON.parse(dataEl.textContent);
+                if (Array.isArray(parsed)) {
+                    initial = parsed.slice(0, 4);
+                }
+            }
+        } catch (e) {}
+        while (initial.length < 4) initial.push(null);
+
+        const slotStates = initial.map((item) => {
+            if (!item || !item.url) return { kind: 'empty' };
+            return { kind: 'server', url: item.url, title: item.title || '' };
+        });
+
+        const mount = document.getElementById('booth-slots-mount');
+        const strip = document.getElementById('booth-strip');
+        const picker = document.getElementById('booth-layout-picker');
+        const btnPng = document.getElementById('download-strip-png');
+        const btnJpg = document.getElementById('download-strip-jpg');
+        const btnJpeg = document.getElementById('download-strip-jpeg');
+        const cam = window.__clickBoothCamera;
+        if (!mount || !strip || !picker || !cam) return;
+
+        function getLayoutN() {
+            const pressed = picker.querySelector('.layout-pick[aria-pressed="true"]');
+            return pressed ? parseInt(pressed.getAttribute('data-strip'), 10) : 4;
+        }
+
+        function nextEmptyIndex() {
+            const n = getLayoutN();
+            for (let i = 0; i < n; i += 1) {
+                if (slotStates[i].kind === 'empty') return i;
+            }
+            return -1;
+        }
+
+        function stripHasAnyImage() {
+            const n = getLayoutN();
+            for (let i = 0; i < n; i += 1) {
+                if (slotStates[i].kind !== 'empty') return true;
+            }
+            return false;
+        }
+
+        function revokeCapture(i) {
+            const s = slotStates[i];
+            if (s && s.kind === 'capture' && s.blobUrl) {
+                URL.revokeObjectURL(s.blobUrl);
+            }
+        }
+
+        function updateDlButtons() {
+            const ok = stripHasAnyImage();
+            if (btnPng) btnPng.disabled = !ok;
+            if (btnJpg) btnJpg.disabled = !ok;
+            if (btnJpeg) btnJpeg.disabled = !ok;
+        }
+
+        function renderSlots() {
+            mount.innerHTML = '';
+            const n = getLayoutN();
+            for (let idx = 0; idx < 4; idx += 1) {
+                const slotEl = document.createElement('div');
+                slotEl.className = 'booth-slot';
+                slotEl.dataset.boothSlot = String(idx + 1);
+                if (idx + 1 > n) slotEl.dataset.boothHidden = '1';
+
+                if (idx > 0 && idx < n) {
+                    const perf = document.createElement('div');
+                    perf.className = 'booth-perf';
+                    perf.setAttribute('aria-hidden', 'true');
+                    mount.appendChild(perf);
+                }
+
+                const frame = document.createElement('div');
+                frame.className = 'booth-frame bg-white p-2 pb-4 rounded-lg';
+
+                const s = slotStates[idx];
+                if (s.kind === 'empty') {
+                    const ph = document.createElement('div');
+                    ph.className = 'booth-empty flex flex-col items-center justify-center aspect-[3/4] rounded-md bg-gradient-to-b from-stone-100 to-stone-200/80 text-stone-400 text-sm pointer-events-none';
+                    ph.innerHTML = '<span class="text-2xl mb-1 opacity-60">◇</span><span>Frame ' + (idx + 1) + '</span>';
+                    frame.appendChild(ph);
+                } else {
+                    const srcUrl = s.kind === 'capture' ? s.blobUrl : s.url;
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'lightbox-trigger block w-full overflow-hidden rounded-md bg-stone-100 aspect-[3/4] cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 focus-visible:ring-offset-2 ring-offset-white';
+                    btn.dataset.lightboxSrc = srcUrl;
+                    btn.dataset.lightboxAlt = s.title || 'Booth photo';
+                    const img = document.createElement('img');
+                    img.src = srcUrl;
+                    img.alt = s.title || '';
+                    img.className = 'w-full h-full object-cover pointer-events-none';
+                    img.decoding = 'async';
+                    btn.appendChild(img);
+                    frame.appendChild(btn);
+                    if (s.title) {
+                        const cap = document.createElement('p');
+                        cap.className = 'text-center text-stone-600 text-xs mt-2 truncate px-1';
+                        cap.textContent = s.title;
+                        frame.appendChild(cap);
+                    }
+                }
+
+                slotEl.appendChild(frame);
+                mount.appendChild(slotEl);
+            }
+            updateDlButtons();
+        }
+
+        function setLayout(num) {
+            picker.querySelectorAll('.layout-pick').forEach((btn) => {
+                const on = parseInt(btn.getAttribute('data-strip'), 10) === num;
+                btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            try {
+                localStorage.setItem('boothStripLayout', String(num));
+            } catch (e) {}
+            renderSlots();
+        }
+
+        picker.querySelectorAll('.layout-pick').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setLayout(parseInt(btn.getAttribute('data-strip'), 10));
+            });
+        });
+
+        let layoutInitial = 4;
+        try {
+            const saved = localStorage.getItem('boothStripLayout');
+            if (saved && /^[1-4]$/.test(saved)) layoutInitial = parseInt(saved, 10);
+        } catch (e) {}
+        setLayout(layoutInitial);
+
+        function captureToNextSlot() {
+            const i = nextEmptyIndex();
+            if (i < 0) return;
+            cam.grabFrameToBlob(0.92, (blob) => {
+                if (!blob) return;
+                revokeCapture(i);
+                const blobUrl = URL.createObjectURL(blob);
+                slotStates[i] = { kind: 'capture', blobUrl, title: '' };
+                renderSlots();
+            });
+        }
+
+        async function boothStripInteract() {
+            if (nextEmptyIndex() < 0) return;
+            const n = getLayoutN();
+            if (!cam.isStreaming()) {
+                await cam.startCamera({ showMainView: false });
+                if (!cam.isStreaming()) return;
+                if (n === 1) {
+                    await new Promise((r) => requestAnimationFrame(r));
+                    captureToNextSlot();
+                }
+                return;
+            }
+            captureToNextSlot();
+        }
+
+        strip.addEventListener('click', (e) => {
+            if (e.target.closest('.lightbox-trigger')) return;
+            if (e.target.closest('.layout-pick')) return;
+            boothStripInteract();
+        });
+
+        strip.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            if (e.target.closest('.lightbox-trigger')) return;
+            e.preventDefault();
+            boothStripInteract();
+        });
+
+        function loadImage(url) {
+            return new Promise((resolve, reject) => {
+                const im = new Image();
+                if (!String(url).startsWith('blob:')) im.crossOrigin = 'anonymous';
+                im.onload = () => resolve(im);
+                im.onerror = () => reject(new Error('load'));
+                im.src = url;
+            });
+        }
+
+        async function buildStripCanvas(outMime) {
+            const n = getLayoutN();
+            const slotW = 720;
+            const slotH = Math.round((slotW * 4) / 3);
+            const gap = 20;
+            const pad = 32;
+            const bg = '#f5f0e8';
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = slotW + pad * 2;
+            canvas.height = pad * 2 + n * slotH + (n - 1) * gap;
+
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let y = pad;
+            for (let i = 0; i < n; i += 1) {
+                const s = slotStates[i];
+                const x = pad;
+                if (s.kind === 'empty') {
+                    ctx.fillStyle = '#e7e2da';
+                    ctx.fillRect(x, y, slotW, slotH);
+                    ctx.fillStyle = '#a8a29e';
+                    ctx.font = '24px system-ui,sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('—', x + slotW / 2, y + slotH / 2);
+                } else {
+                    try {
+                        const im = await loadImage(s.kind === 'capture' ? s.blobUrl : s.url);
+                        ctx.drawImage(im, x, y, slotW, slotH);
+                    } catch (err) {
+                        ctx.fillStyle = '#e7e2da';
+                        ctx.fillRect(x, y, slotW, slotH);
+                    }
+                }
+                y += slotH + gap;
+            }
+
+            if (outMime === 'image/png') {
+                return new Promise((resolve) => canvas.toBlob((b) => resolve(b), 'image/png'));
+            }
+            return new Promise((resolve) => canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.95));
+        }
+
+        async function downloadStrip(ext, mime) {
+            if (!stripHasAnyImage()) return;
+            const blob = await buildStripCanvas(mime);
+            if (!blob) return;
+            const a = document.createElement('a');
+            const name = 'booth-strip-' + new Date().toISOString().replace(/[:.]/g, '-') + ext;
+            a.href = URL.createObjectURL(blob);
+            a.download = name;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        if (btnPng) btnPng.addEventListener('click', (e) => { e.stopPropagation(); downloadStrip('.png', 'image/png'); });
+        if (btnJpg) btnJpg.addEventListener('click', (e) => { e.stopPropagation(); downloadStrip('.jpg', 'image/jpeg'); });
+        if (btnJpeg) btnJpeg.addEventListener('click', (e) => { e.stopPropagation(); downloadStrip('.jpeg', 'image/jpeg'); });
+
+        const boothToggle = document.getElementById('booth-toggle');
+        const boothPanel = document.getElementById('booth-panel');
+        if (boothToggle && boothPanel) {
+            boothToggle.addEventListener('click', () => {
+                boothPanel.classList.toggle('hidden');
+                const expanded = !boothPanel.classList.contains('hidden');
+                boothToggle.setAttribute('aria-expanded', String(expanded));
+                boothToggle.textContent = expanded ? 'Close booth strip' : 'Open booth strip';
+                if (expanded) {
+                    cam.syncBoothPreview();
+                    try {
+                        strip.focus({ preventScroll: true });
+                    } catch (err) {}
+                }
+            });
+        }
+    })();
+
+    (function () {
+        const root = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-img');
+        const backdrop = document.getElementById('lightbox-backdrop');
+        const closeBtn = document.getElementById('lightbox-close');
+        if (!root || !img || !backdrop || !closeBtn) return;
+
+        function openLightbox(src, alt) {
+            if (!src) return;
+            img.src = src;
+            img.alt = alt || '';
+            root.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            root.classList.add('hidden');
+            img.removeAttribute('src');
+            img.alt = '';
+            document.body.style.overflow = '';
+        }
+
+        document.body.addEventListener('click', (e) => {
+            const t = e.target.closest('.lightbox-trigger');
+            if (!t) return;
+            e.preventDefault();
+            openLightbox(t.getAttribute('data-lightbox-src'), t.getAttribute('data-lightbox-alt'));
+        });
+
+        closeBtn.addEventListener('click', closeLightbox);
+        backdrop.addEventListener('click', closeLightbox);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !root.classList.contains('hidden')) closeLightbox();
+        });
+    })();
+
+    </script>
+</body>
+</html>

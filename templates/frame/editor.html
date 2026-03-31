@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ layout.title }} — Photo Booth</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "inverse-on-surface": "#a39f70",
+            "on-secondary-fixed-variant": "#276744",
+            "tertiary-fixed": "#c29fff",
+            "tertiary-dim": "#6746a0",
+            "on-tertiary-fixed-variant": "#47247e",
+            "primary-dim": "#973069",
+            "on-tertiary-container": "#3e1975",
+            "error-dim": "#a70138",
+            "primary-fixed": "#f980bc",
+            "surface-bright": "#fffbff",
+            "primary-container": "#f980bc",
+            "surface-container-lowest": "#ffffff",
+            "on-surface-variant": "#69663c",
+            "tertiary-fixed-dim": "#b592f2",
+            "on-surface": "#3c3914",
+            "surface-container-highest": "#f1eba6",
+            "primary": "#a73d76",
+            "on-primary-fixed": "#200012",
+            "on-secondary-fixed": "#004a2a",
+            "tertiary": "#7452ad",
+            "on-secondary-container": "#1c5d3b",
+            "on-tertiary": "#ffffff",
+            "on-primary-fixed-variant": "#670142",
+            "secondary-dim": "#246441",
+            "inverse-surface": "#100f00",
+            "surface-tint": "#a73d76",
+            "outline-variant": "#c0bb8a",
+            "surface-container-low": "#fffadf",
+            "tertiary-container": "#c29fff",
+            "secondary-fixed-dim": "#a1e3b7",
+            "on-error-container": "#510017",
+            "on-background": "#3c3914",
+            "secondary-container": "#aff1c5",
+            "background": "#fffbff",
+            "on-secondary": "#ffffff",
+            "surface-variant": "#f1eba6",
+            "primary-fixed-dim": "#e973ae",
+            "on-error": "#ffffff",
+            "error-container": "#f74b6d",
+            "outline": "#868256",
+            "surface-container": "#fcf6b9",
+            "error": "#c12048",
+            "inverse-primary": "#f980bc",
+            "on-primary": "#ffffff",
+            "surface-container-high": "#f7f0b0",
+            "on-tertiary-fixed": "#22004f",
+            "surface-dim": "#ece59e",
+            "secondary": "#31704c",
+            "on-primary-container": "#570037",
+            "secondary-fixed": "#aff1c5",
+            "surface": "#fffbff"
+          },
+          fontFamily: {
+            headline: ["Plus Jakarta Sans", "sans-serif"],
+            body: ["Plus Jakarta Sans", "sans-serif"],
+            label: ["Be Vietnam Pro", "sans-serif"]
+          },
+          borderRadius: { DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px" }
+        }
+      }
+    };
+  </script>
+  <style>
+    .dotted-bg {
+      background-image: radial-gradient(#c0bb8a 2px, transparent 2px);
+      background-size: 32px 32px;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+    .camera-lens-border {
+      box-shadow:
+        0 0 0 12px #f1eba6,
+        0 0 0 16px #c0bb8a,
+        0 20px 50px rgba(0, 0, 0, 0.1);
+    }
+    #boothVideo {
+      display: block;
+    }
+    .frame-slot .slot-live {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .slot-active .frame-slot {
+      box-shadow: 0 0 0 3px #a73d76;
+    }
+  </style>
+</head>
+<body
+  id="editorRoot"
+  class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen dotted-bg flex items-center justify-center p-4 md:p-8 lg:p-12 overflow-x-hidden"
+  data-layout-key="{{ layout.key }}"
+  data-slot-count="{{ layout.slots }}"
+>
+  <canvas id="captureCanvas" class="hidden"></canvas>
+  <canvas id="compositeCanvas" class="hidden"></canvas>
+
+  <main class="w-full max-w-7xl flex flex-col md:flex-row gap-8 lg:gap-16 items-center justify-center">
+    <section class="flex-1 flex flex-col items-center gap-8 md:gap-10 w-full max-w-2xl">
+      <div class="relative w-full aspect-[4/3] bg-surface-container-low rounded-[3.5rem] p-4 md:p-6 camera-lens-border flex items-center justify-center overflow-hidden">
+        <div class="relative w-full h-full rounded-[2.5rem] overflow-hidden bg-black ring-8 ring-white/10 shadow-inner">
+          <video
+            id="boothVideo"
+            class="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none transition-opacity duration-300"
+            playsinline
+            muted
+            autoplay
+          ></video>
+          <div id="viewfinderIdle" class="absolute inset-0 bg-black flex flex-col items-center justify-center gap-4">
+            <span class="material-symbols-outlined text-white/40 text-6xl">photo_camera</span>
+            <p class="text-white/60 font-label text-sm text-center px-6">Select a slot on the right, then tap the shutter</p>
+          </div>
+          <div id="countdownOverlay" class="hidden absolute inset-0 bg-black/80 flex items-center justify-center z-20">
+            <div
+              id="countdownNumber"
+              class="bg-primary/95 text-white font-headline text-7xl md:text-8xl font-black w-36 h-36 md:w-44 md:h-44 flex items-center justify-center rounded-full shadow-[0px_10px_0px_#570037] border-4 border-white"
+            >
+              3
+            </div>
+          </div>
+          <div class="absolute top-6 md:top-8 left-6 md:left-8 bg-black/50 backdrop-blur-md px-4 md:px-5 py-2 rounded-full border border-white/20 z-10">
+            <span class="text-white font-label text-xs md:text-sm font-bold tracking-[0.08em]">{{ layout.title }}</span>
+          </div>
+          <div class="absolute bottom-6 md:bottom-8 right-6 md:right-8 flex gap-2 md:gap-3 z-10 pointer-events-none">
+            <div class="px-3 py-1.5 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-label text-[9px] md:text-[10px] uppercase font-bold tracking-widest">ISO 200</div>
+            <div class="px-3 py-1.5 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-label text-[9px] md:text-[10px] uppercase font-bold tracking-widest">HD</div>
+          </div>
+          <div class="absolute top-6 md:top-8 right-6 md:right-8 flex flex-col gap-3 z-10">
+            <a
+              href="{% url 'gallery:frames' %}"
+              class="w-11 h-11 rounded-full bg-white/20 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/40 transition-all border border-white/30"
+              title="Back to layouts"
+            >
+              <span class="material-symbols-outlined text-xl">arrow_back</span>
+            </a>
+            <button type="button" id="gridHintBtn" class="w-11 h-11 rounded-full bg-white/20 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/40 transition-all border border-white/30" title="Layout">
+              <span class="material-symbols-outlined text-xl">grid_4x4</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6 md:gap-10 lg:gap-12">
+        <button
+          type="button"
+          id="resetBtn"
+          class="w-14 h-14 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-[0px_6px_0px_#868256] border-2 border-white"
+          title="Clear all"
+        >
+          <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+        <div class="relative group">
+          <div class="absolute inset-0 bg-primary/30 rounded-full blur-2xl animate-pulse group-hover:scale-125 transition-transform pointer-events-none"></div>
+          <button
+            type="button"
+            id="shutterBtn"
+            class="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-primary p-2 shadow-[0px_10px_0px_#570037] border-4 border-white active:translate-y-2 active:shadow-[0px_4px_0px_#570037] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Capture to active slot"
+          >
+            <div class="w-full h-full rounded-full bg-primary-container border-2 border-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-white text-3xl md:text-4xl" style="font-variation-settings: 'FILL' 1">photo_camera</span>
+            </div>
+          </button>
+        </div>
+        <button
+          type="button"
+          id="switchCameraBtn"
+          class="w-14 h-14 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-[0px_6px_0px_#868256] border-2 border-white"
+          title="Switch camera"
+        >
+          <span class="material-symbols-outlined text-2xl">cached</span>
+        </button>
+      </div>
+    </section>
+
+    <aside class="w-full md:w-auto flex flex-col items-center max-w-sm mx-auto md:mx-0">
+      <div class="bg-white p-5 rounded-2xl shadow-2xl border-b-[12px] border-r-[12px] border-surface-container-highest flex flex-col gap-4 w-full md:w-60 relative">
+        <div class="absolute -top-4 -right-4 w-12 h-12 md:w-14 md:h-14 bg-primary text-white flex items-center justify-center rounded-full rotate-12 font-headline font-bold text-[10px] md:text-xs shadow-lg border-4 border-white z-10">
+          NEW!
+        </div>
+        <p class="font-headline font-bold text-primary text-center text-sm tracking-tight">{{ layout.title }}</p>
+
+        {% if layout.key == "strip-4" %}
+        <div class="space-y-4" id="slotsContainer">
+        {% elif layout.key == "square-4" %}
+        <div class="grid grid-cols-2 gap-3" id="slotsContainer">
+        {% elif layout.key == "solo-1" %}
+        <div class="space-y-4" id="slotsContainer">
+        {% elif layout.key == "grid-6" %}
+        <div class="grid grid-cols-2 grid-rows-3 gap-2" id="slotsContainer">
+        {% elif layout.key == "duo-2" %}
+        <div class="flex flex-col gap-3" id="slotsContainer">
+        {% else %}
+        <div class="space-y-4" id="slotsContainer">
+        {% endif %}
+          {% for i in layout.indexes %}
+          <div
+            class="frame-cell relative rounded-xl transition-shadow {% if layout.key == 'strip-4' or layout.key == 'square-4' %}aspect-square{% elif layout.key == 'solo-1' %}min-h-[200px]{% elif layout.key == 'grid-6' %}aspect-[4/3]{% elif layout.key == 'duo-2' %}aspect-[3/2]{% else %}aspect-square{% endif %}"
+            data-slot-index="{{ forloop.counter0 }}"
+          >
+            <input class="hidden image-input" type="file" accept="image/*" />
+            <div
+              class="frame-slot w-full h-full rounded-xl overflow-hidden border-2 border-dashed border-outline-variant bg-surface-container-low relative cursor-pointer select-none touch-manipulation min-h-[100px]"
+            ></div>
+            <button
+              type="button"
+              class="upload-btn absolute bottom-2 right-2 z-10 w-9 h-9 rounded-full bg-white/90 shadow-md border border-outline-variant/40 flex items-center justify-center hover:bg-white"
+              title="Upload photo"
+            >
+              <span class="material-symbols-outlined text-on-surface text-xl">add_photo_alternate</span>
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="mt-2 border-t-2 border-dashed border-surface-container-highest pt-4 text-center">
+          <p class="font-headline font-black text-primary text-lg md:text-2xl tracking-tighter uppercase italic">Dreamy Vibes</p>
+          <p class="font-label text-on-surface-variant text-[10px] mt-1">{{ layout.subtitle }}</p>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-col gap-4 w-full md:w-60">
+        <button
+          type="button"
+          id="downloadBtn"
+          disabled
+          class="w-full py-4 bg-secondary text-on-secondary font-headline font-bold rounded-2xl shadow-[0px_6px_0px_#1c5d3b] hover:translate-y-1 hover:shadow-[0px_2px_0px_#1c5d3b] transition-all flex items-center justify-center gap-3 border-2 border-white/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+        >
+          <span class="material-symbols-outlined text-2xl">download</span>
+          SAVE LAYOUT
+        </button>
+        <button
+          type="button"
+          id="shareBtn"
+          class="w-full py-4 bg-tertiary text-on-tertiary font-headline font-bold rounded-2xl shadow-[0px_6px_0px_#3e1975] hover:translate-y-1 hover:shadow-[0px_2px_0px_#3e1975] transition-all flex items-center justify-center gap-3 border-2 border-white/20"
+        >
+          <span class="material-symbols-outlined text-2xl">share</span>
+          SHARE
+        </button>
+      </div>
+    </aside>
+  </main>
+
+  <div class="fixed top-12 left-12 pointer-events-none hidden lg:block">
+    <div class="bg-surface-container-high p-4 rounded-2xl border-2 border-primary rotate-[-12deg] shadow-xl animate-bounce">
+      <span class="material-symbols-outlined text-primary text-5xl">auto_awesome</span>
+    </div>
+  </div>
+  <div class="fixed bottom-12 right-12 pointer-events-none hidden lg:block">
+    <div class="bg-secondary-container p-4 rounded-2xl border-2 border-secondary rotate-[8deg] shadow-xl">
+      <span class="material-symbols-outlined text-secondary text-5xl">favorite</span>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const captureCanvas = document.getElementById("captureCanvas");
+      const compositeCanvas = document.getElementById("compositeCanvas");
+      const boothVideo = document.getElementById("boothVideo");
+      const viewfinderIdle = document.getElementById("viewfinderIdle");
+      const countdownOverlay = document.getElementById("countdownOverlay");
+      const countdownNumber = document.getElementById("countdownNumber");
+      const shutterBtn = document.getElementById("shutterBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const switchCameraBtn = document.getElementById("switchCameraBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const root = document.getElementById("editorRoot");
+      const layoutKey = root.dataset.layoutKey || "strip-4";
+      const slotCount = parseInt(root.dataset.slotCount || "4", 10);
+
+      const cells = () => [...document.querySelectorAll(".frame-cell")];
+      let stream = null;
+      let facingMode = "user";
+      let activeSlotIndex = 0;
+
+      function renderPlaceholder(slot, index) {
+        slot.innerHTML = `
+          <div class="w-full h-full flex flex-col items-center justify-center gap-1 text-outline-variant opacity-80">
+            <span class="material-symbols-outlined text-4xl">add_a_photo</span>
+            <span class="font-label text-[10px] font-bold uppercase tracking-tighter">Slot ${index + 1}</span>
+          </div>
+        `;
+      }
+
+      function setSlotImage(slot, src) {
+        const idx = [...document.querySelectorAll(".frame-cell")].findIndex(
+          (c) => c.querySelector(".frame-slot") === slot
+        );
+        const n = idx >= 0 ? idx + 1 : 1;
+        slot.innerHTML = `<img src="${src}" alt="Capture ${n}" class="w-full h-full object-cover" />`;
+        updateDownloadState();
+      }
+
+      function clipRoundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        if (typeof ctx.roundRect === "function") {
+          ctx.roundRect(x, y, w, h, r);
+        } else {
+          ctx.rect(x, y, w, h);
+        }
+        ctx.clip();
+      }
+
+      function stopStream() {
+        if (stream) {
+          stream.getTracks().forEach((t) => t.stop());
+          stream = null;
+        }
+        boothVideo.srcObject = null;
+        boothVideo.classList.add("opacity-0", "pointer-events-none");
+        viewfinderIdle.classList.remove("hidden");
+      }
+
+      async function startCamera() {
+        stopStream();
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode },
+            audio: false,
+          });
+          boothVideo.srcObject = stream;
+          boothVideo.classList.remove("opacity-0", "pointer-events-none");
+          viewfinderIdle.classList.add("hidden");
+          await boothVideo.play();
+        } catch (e) {
+          viewfinderIdle.innerHTML = `
+            <span class="material-symbols-outlined text-error text-5xl">no_photography</span>
+            <p class="text-error-container font-label text-sm text-center px-4">Camera unavailable. Allow access or use Upload on a slot.</p>
+          `;
+        }
+      }
+
+      function setActiveSlot(i) {
+        activeSlotIndex = Math.max(0, Math.min(i, cells().length - 1));
+        cells().forEach((c, idx) => {
+          c.classList.toggle("slot-active", idx === activeSlotIndex);
+        });
+      }
+
+      function captureFromBooth() {
+        if (!boothVideo.videoWidth || !stream) return false;
+        captureCanvas.width = boothVideo.videoWidth;
+        captureCanvas.height = boothVideo.videoHeight;
+        captureCanvas.getContext("2d").drawImage(boothVideo, 0, 0);
+        const dataUrl = captureCanvas.toDataURL("image/jpeg", 0.92);
+        const slot = cells()[activeSlotIndex].querySelector(".frame-slot");
+        setSlotImage(slot, dataUrl);
+        return true;
+      }
+
+      function runCountdownThenCapture() {
+        let n = 3;
+        countdownOverlay.classList.remove("hidden");
+        countdownNumber.textContent = String(n);
+        const id = setInterval(() => {
+          n -= 1;
+          if (n <= 0) {
+            clearInterval(id);
+            countdownOverlay.classList.add("hidden");
+            captureFromBooth();
+            const next = cells().findIndex((c, i) => i > activeSlotIndex && !c.querySelector(".frame-slot img"));
+            if (next >= 0) setActiveSlot(next);
+            else {
+              const firstEmpty = cells().findIndex((c) => !c.querySelector(".frame-slot img"));
+              if (firstEmpty >= 0) setActiveSlot(firstEmpty);
+            }
+          } else {
+            countdownNumber.textContent = String(n);
+          }
+        }, 700);
+      }
+
+      function allSlotsFilled() {
+        return cells().every((c) => c.querySelector(".frame-slot img"));
+      }
+
+      function updateDownloadState() {
+        downloadBtn.disabled = !allSlotsFilled();
+      }
+
+      function loadImage(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+      }
+
+      async function buildCompositeBlob() {
+        const imgs = [];
+        for (const c of cells()) {
+          const im = c.querySelector(".frame-slot img");
+          if (!im) throw new Error("incomplete");
+          imgs.push(await loadImage(im.src));
+        }
+        const W = 1200;
+        let cw, ch;
+        const pad = 16;
+        const gap = 12;
+
+        if (layoutKey === "strip-4" || layoutKey === "duo-2") {
+          const sliceH = (W - pad * 2 - gap * (imgs.length - 1)) / imgs.length;
+          cw = W;
+          ch = pad * 2 + imgs.length * sliceH + gap * (imgs.length - 1);
+          compositeCanvas.width = cw;
+          compositeCanvas.height = ch;
+          const ctx = compositeCanvas.getContext("2d");
+          ctx.fillStyle = "#fcf6b9";
+          ctx.fillRect(0, 0, cw, ch);
+          let y = pad;
+          imgs.forEach((img) => {
+            const tw = W - pad * 2;
+            const th = sliceH;
+            ctx.save();
+            clipRoundRect(ctx, pad, y, tw, th, 12);
+            const scale = Math.max(tw / img.width, th / img.height);
+            const dw = img.width * scale;
+            const dh = img.height * scale;
+            ctx.drawImage(img, pad + (tw - dw) / 2, y + (th - dh) / 2, dw, dh);
+            ctx.restore();
+            y += th + gap;
+          });
+        } else if (layoutKey === "square-4" || layoutKey === "grid-6") {
+          const cols = 2;
+          const rows = layoutKey === "square-4" ? 2 : 3;
+          const cellW = (W - pad * 2 - gap) / cols;
+          const cellH = cellW;
+          cw = W;
+          ch = pad * 2 + rows * cellH + (rows - 1) * gap;
+          compositeCanvas.width = cw;
+          compositeCanvas.height = ch;
+          const ctx = compositeCanvas.getContext("2d");
+          ctx.fillStyle = "#fcf6b9";
+          ctx.fillRect(0, 0, cw, ch);
+          imgs.forEach((img, i) => {
+            const col = i % cols;
+            const row = Math.floor(i / cols);
+            const x = pad + col * (cellW + gap);
+            const y = pad + row * (cellH + gap);
+            ctx.save();
+            clipRoundRect(ctx, x, y, cellW, cellH, 12);
+            const scale = Math.max(cellW / img.width, cellH / img.height);
+            const dw = img.width * scale;
+            const dh = img.height * scale;
+            ctx.drawImage(img, x + (cellW - dw) / 2, y + (cellH - dh) / 2, dw, dh);
+            ctx.restore();
+          });
+        } else {
+          const img = imgs[0];
+          const maxH = 1600;
+          const ratio = Math.min(W / img.width, maxH / img.height);
+          cw = Math.round(img.width * ratio);
+          ch = Math.round(img.height * ratio);
+          compositeCanvas.width = cw;
+          compositeCanvas.height = ch;
+          const ctx = compositeCanvas.getContext("2d");
+          ctx.fillStyle = "#fcf6b9";
+          ctx.fillRect(0, 0, cw, ch);
+          ctx.drawImage(img, 0, 0, cw, ch);
+        }
+
+        return new Promise((resolve) => {
+          compositeCanvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.92);
+        });
+      }
+
+      document.querySelectorAll(".frame-slot").forEach((slot, index) => {
+        renderPlaceholder(slot, index);
+      });
+      setActiveSlot(0);
+      updateDownloadState();
+
+      cells().forEach((cell, index) => {
+        const slot = cell.querySelector(".frame-slot");
+        const input = cell.querySelector(".image-input");
+        const uploadBtn = cell.querySelector(".upload-btn");
+
+        cell.addEventListener("click", (e) => {
+          if (e.target.closest(".upload-btn")) return;
+          setActiveSlot(index);
+          if (!stream) startCamera();
+        });
+
+        uploadBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setActiveSlot(index);
+          input.click();
+        });
+
+        input.addEventListener("change", (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            setSlotImage(slot, ev.target.result);
+          };
+          reader.readAsDataURL(file);
+          input.value = "";
+        });
+      });
+
+      shutterBtn.addEventListener("click", async () => {
+        if (!stream) {
+          await startCamera();
+        }
+        if (!stream) return;
+        runCountdownThenCapture();
+      });
+
+      resetBtn.addEventListener("click", () => {
+        stopStream();
+        cells().forEach((cell, index) => {
+          const slot = cell.querySelector(".frame-slot");
+          renderPlaceholder(slot, index);
+        });
+        viewfinderIdle.classList.remove("hidden");
+        viewfinderIdle.innerHTML = `
+          <span class="material-symbols-outlined text-white/40 text-6xl">photo_camera</span>
+          <p class="text-white/60 font-label text-sm text-center px-6">Select a slot on the right, then tap the shutter</p>
+        `;
+        setActiveSlot(0);
+        updateDownloadState();
+      });
+
+      switchCameraBtn.addEventListener("click", async () => {
+        facingMode = facingMode === "user" ? "environment" : "user";
+        if (stream) await startCamera();
+      });
+
+      downloadBtn.addEventListener("click", async () => {
+        try {
+          const blob = await buildCompositeBlob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "scrapbook-" + layoutKey + "-" + new Date().toISOString().slice(0, 10) + ".jpg";
+          a.click();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error(err);
+        }
+      });
+
+      shareBtn.addEventListener("click", async () => {
+        if (!allSlotsFilled()) {
+          alert("Fill every slot first, then save or share.");
+          return;
+        }
+        try {
+          const blob = await buildCompositeBlob();
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], "layout.jpg", { type: "image/jpeg" })] })) {
+            const file = new File([blob], "scrapbook-layout.jpg", { type: "image/jpeg" });
+            await navigator.share({ files: [file], title: "{{ layout.title|escapejs }}" });
+          } else {
+            const url = URL.createObjectURL(blob);
+            window.open(url, "_blank");
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      });
+
+      document.getElementById("gridHintBtn").addEventListener("click", () => {
+        alert("Layout: {{ layout.title|escapejs }} — {{ layout.slots }} photo(s). Tap a slot, then shutter.");
+      });
+    })();
+  </script>
+</body>
+</html>
