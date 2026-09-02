@@ -7,79 +7,104 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "surface-container-highest": "#f1eba6",
-              "surface-container-low": "#fffadf",
-              "on-error-container": "#510017",
-              "primary-dim": "#973069",
-              "on-secondary": "#ffffff",
-              "tertiary-fixed": "#c29fff",
-              "on-secondary-container": "#1c5d3b",
-              "on-primary": "#ffffff",
-              "error": "#c12048",
-              "surface-container-high": "#f7f0b0",
-              "on-secondary-fixed-variant": "#276744",
-              "on-tertiary-fixed-variant": "#47247e",
-              "surface-variant": "#f1eba6",
-              "secondary-fixed-dim": "#a1e3b7",
-              "primary-fixed": "#f980bc",
-              "inverse-primary": "#f980bc",
-              "surface-dim": "#ece59e",
-              "surface-tint": "#a73d76",
-              "primary-fixed-dim": "#e973ae",
-              "tertiary-container": "#c29fff",
-              "tertiary-fixed-dim": "#b592f2",
-              "outline": "#868256",
-              "error-dim": "#a70138",
-              "surface-container": "#fcf6b9",
-              "error-container": "#f74b6d",
-              "on-primary-container": "#570037",
-              "on-primary-fixed-variant": "#670142",
-              "inverse-on-surface": "#a39f70",
-              "on-surface-variant": "#69663c",
-              "surface": "#fffbff",
-              "on-tertiary-container": "#3e1975",
-              "on-background": "#3c3914",
-              "surface-bright": "#fffbff",
-              "primary": "#a73d76",
-              "on-error": "#ffffff",
-              "tertiary-dim": "#6746a0",
-              "secondary-dim": "#246441",
-              "surface-container-lowest": "#ffffff",
-              "on-surface": "#3c3914",
-              "primary-container": "#f980bc",
-              "secondary-container": "#aff1c5",
-              "on-tertiary": "#ffffff",
-              "on-secondary-fixed": "#004a2a",
-              "on-tertiary-fixed": "#22004f",
-              "secondary-fixed": "#aff1c5",
-              "inverse-surface": "#100f00",
-              "secondary": "#31704c",
-              "outline-variant": "#c0bb8a",
-              "on-primary-fixed": "#200012",
-              "tertiary": "#7452ad",
-              "background": "#fffbff"
-            },
-            fontFamily: {
-              "headline": ["Plus Jakarta Sans"],
-              "body": ["Plus Jakarta Sans"],
-              "label": ["Be Vietnam Pro"]
-            },
-            borderRadius: {
-              "DEFAULT": "1rem",
-              "lg": "1.5rem",
-              "xl": "2rem",
-              "full": "9999px"
-            },
-          },
-        },
-      }
-    </script>
+        <script id="tailwind-config">
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "surface-container-highest": "#f1eba6",
+                            "surface-container-low": "#fffadf",
+                            "on-error-container": "#510017",
+                            "primary-dim": "#973069",
+                            "on-secondary": "#ffffff",
+                            "tertiary-fixed": "#c29fff",
+                            "on-secondary-container": "#1c5d3b",
+                            "on-primary": "#ffffff",
+                            "error": "#c12048",
+                            "surface-container-high": "#f7f0b0",
+                            "on-secondary-fixed-variant": "#276744",
+                            "on-tertiary-fixed-variant": "#47247e",
+                            "surface-variant": "#f1eba6",
+                            "secondary-fixed-dim": "#a1e3b7",
+                            "primary-fixed": "#f980bc",
+                            "inverse-primary": "#f980bc",
+                            "surface-dim": "#ece59e",
+                            "surface-tint": "#a73d76",
+                            "primary-fixed-dim": "#e973ae",
+                            "tertiary-container": "#c29fff",
+                            "tertiary-fixed-dim": "#b592f2",
+                            "outline": "#868256",
+                            "error-dim": "#a70138",
+                            "surface-container": "#fcf6b9",
+                            "error-container": "#f74b6d",
+                            "on-primary-container": "#570037",
+                            "on-primary-fixed-variant": "#670142",
+                            "inverse-on-surface": "#a39f70",
+                            "on-surface-variant": "#69663c",
+                            "surface": "#fffbff",
+                            "on-tertiary-container": "#3e1975",
+                            "on-background": "#3c3914",
+                            "surface-bright": "#fffbff",
+                            "primary": "#a73d76",
+                            "on-error": "#ffffff",
+                            "tertiary-dim": "#6746a0",
+                            "secondary-dim": "#246441",
+                            "surface-container-lowest": "#ffffff",
+                            "on-tertiary": "#ffffff",
+                            "on-secondary-fixed": "#004a2a",
+                            "on-tertiary-fixed": "#22004f",
+                            "secondary": "#31704c",
+                            "outline-variant": "#c0bb8a",
+                            "on-primary-fixed": "#200012",
+                            "tertiary": "#7452ad",
+                            "on-secondary-container": "#1c5d3b",
+                            "on-tertiary": "#ffffff",
+                            "on-primary-fixed-variant": "#670142",
+                            "secondary-dim": "#246441",
+                            "inverse-surface": "#100f00",
+                            "surface-tint": "#a73d76",
+                            "outline-variant": "#c0bb8a",
+                            "surface-container-low": "#fffadf",
+                            "tertiary-container": "#c29fff",
+                            "secondary-fixed-dim": "#a1e3b7",
+                            "on-error-container": "#510017",
+                            "on-background": "#3c3914",
+                            "secondary-container": "#aff1c5",
+                            "background": "#fffbff",
+                            "on-secondary": "#ffffff",
+                            "surface-variant": "#f1eba6",
+                            "primary-fixed-dim": "#e973ae",
+                            "on-error": "#ffffff",
+                            "error-container": "#f74b6d",
+                            "outline": "#868256",
+                            "surface-container": "#fcf6b9",
+                            "error": "#c12048",
+                            "inverse-primary": "#f980bc",
+                            "on-primary": "#ffffff",
+                            "surface-container-high": "#f7f0b0",
+                            "on-tertiary-fixed": "#22004f",
+                            "surface-dim": "#ece59e",
+                            "secondary": "#31704c",
+                            "on-primary-container": "#570037",
+                            "secondary-fixed": "#aff1c5",
+                            "surface": "#fffbff"
+                        },
+                        fontFamily: {
+                            "headline": ["Plus Jakarta Sans"],
+                            "body": ["Plus Jakarta Sans"],
+                            "label": ["Be Vietnam Pro"]
+                        },
+                        borderRadius: {
+                            "DEFAULT": "1rem",
+                            "lg": "1.5rem",
+                            "xl": "2rem",
+                            "full": "9999px"
+                        },
+                    },
+                },
+            };
+        </script>
     <style>
         .dot-pattern {
             background-image: radial-gradient(#f1eba6 1px, transparent 1px);
@@ -121,7 +146,7 @@
 <main class="max-w-7xl mx-auto px-6 pt-16">
     <div class="text-center mb-16">
         <h2 class="text-3xl md:text-4xl font-extrabold text-on-background font-headline tracking-tight mb-3">Choose Your Frame</h2>
-        <p class="font-label text-on-surface-variant text-sm tracking-tight max-w-sm mx-auto">Pick a layout to start your creative journey.</p>
+        <p class="font-label text-on-surface-variant text-sm tracking-tight max-w-sm mx-auto">Pick a layout to start your creative journey. hello</p>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
@@ -263,8 +288,8 @@
             box-shadow: 0 25px 50px -12px rgba(44, 36, 32, 0.35), inset 0 1px 0 rgba(255,255,255,0.85);
         }
         .booth-perf {
-            height: 10px;
-            margin: 0.35rem 0;
+            height: 8px;
+            margin: 0.25rem 0;
             background: repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(120,100,90,0.2) 5px, rgba(120,100,90,0.2) 7px);
             border-radius: 2px;
             opacity: 0.85;
@@ -366,7 +391,7 @@
         <section class="frame frame-double bg-white rounded-lg shadow-md p-6 mb-8 border-2 border-dashed border-gray-300">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Frame 2: Two-Photo Display</h2>
             {% if frame_two %}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {% for photo in frame_two %}
                         <article class="text-center">
                             <button type="button" class="lightbox-trigger photo-link block w-full cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded" data-lightbox-src="{{ photo.image.url }}" data-lightbox-alt="{{ photo.title|default:'Uploaded photo' }}">
@@ -385,7 +410,7 @@
         {% if other_photos %}
             <section class="frame frame-list bg-white rounded-lg shadow-md p-6 border-2 border-dashed border-gray-300">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">More Photos</h2>
-                <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 list-none p-0">
+                <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 list-none p-0">
                     {% for photo in other_photos %}
                         <li class="text-center">
                             <button type="button" class="lightbox-trigger photo-link block w-full cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded" data-lightbox-src="{{ photo.image.url }}" data-lightbox-alt="{{ photo.title|default:'Uploaded photo' }}">
@@ -753,7 +778,7 @@
                 }
 
                 const frame = document.createElement('div');
-                frame.className = 'booth-frame bg-white p-2 pb-4 rounded-lg';
+                frame.className = 'booth-frame bg-white p-1 pb-2 rounded-lg';
 
                 const s = slotStates[idx];
                 if (s.kind === 'empty') {
@@ -771,7 +796,7 @@
                     const img = document.createElement('img');
                     img.src = srcUrl;
                     img.alt = s.title || '';
-                    img.className = 'w-full h-full object-cover pointer-events-none';
+                    img.className = 'w-full h-full object-contain pointer-events-none';
                     img.decoding = 'async';
                     btn.appendChild(img);
                     frame.appendChild(btn);
@@ -866,10 +891,26 @@
 
         async function buildStripCanvas(outMime) {
             const n = getLayoutN();
-            const slotW = 720;
-            const slotH = Math.round((slotW * 4) / 3);
-            const gap = 20;
-            const pad = 32;
+            // Calculate slot width/height dynamically to avoid excessive horizontal padding.
+            // Start from a sensible base slice height, compute the width each image would need
+            // when fit to that height, and pick the max width as the slot width (clamped).
+            const baseSliceH = 360;
+            const candidateWidths = [];
+            for (let i = 0; i < n; i += 1) {
+                const s = slotStates[i];
+                if (s.kind === 'empty') continue;
+                try {
+                    // We can't synchronously inspect image natural size here; loadImage above
+                    // returned actual images so if we reach here, im.width/height are available.
+                } catch (e) {}
+            }
+            // We'll load images sizes to compute exact widths below when drawing each slot.
+            // For now use a default slotW candidate and compute final values after loading images.
+            let slotW = 720;
+            let slotH = Math.round((slotW * 4) / 3);
+            // =============gap for photo
+            const gap = 42; // increased gap between slots
+            const pad = 46; // increased canvas padding
             const bg = '#f5f0e8';
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -891,9 +932,22 @@
                     ctx.textAlign = 'center';
                     ctx.fillText('—', x + slotW / 2, y + slotH / 2);
                 } else {
-                    try {
+                        try {
                         const im = await loadImage(s.kind === 'capture' ? s.blobUrl : s.url);
-                        ctx.drawImage(im, x, y, slotW, slotH);
+                        // compute candidate widths for this image when fit to baseSliceH
+                        const candidateW = Math.round(im.width * (baseSliceH / im.height));
+                        // adapt slotW to the largest needed width among images (clamp to 1200)
+                        slotW = Math.min(1200, Math.max(slotW, candidateW));
+                        slotH = Math.round((slotW * 4) / 3);
+                        // now draw image preserving aspect ratio (fit inside slot)
+                        const iw = im.width;
+                        const ih = im.height;
+                        const scale = Math.min(slotW / iw, slotH / ih);
+                        const dw = Math.round(iw * scale);
+                        const dh = Math.round(ih * scale);
+                        const dx = Math.round(x + (slotW - dw) / 2);
+                        const dy = Math.round(y + (slotH - dh) / 2);
+                        ctx.drawImage(im, dx, dy, dw, dh);
                     } catch (err) {
                         ctx.fillStyle = '#e7e2da';
                         ctx.fillRect(x, y, slotW, slotH);

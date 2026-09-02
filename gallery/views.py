@@ -11,6 +11,8 @@ LAYOUTS: dict[str, dict[str, object]] = {
         'container_class': 'flex flex-col gap-2.5',
         'slot_class': 'w-full aspect-[4/1]',
         'slots': 4,
+        'export_width': 720,
+        'export_slice_h': 540,
     },
     'square-4': {
         'title': 'Square 2x2',
@@ -18,6 +20,7 @@ LAYOUTS: dict[str, dict[str, object]] = {
         'container_class': 'grid grid-cols-2 gap-2.5',
         'slot_class': 'aspect-square',
         'slots': 4,
+        'export_width': 1200,
     },
     'solo-1': {
         'title': 'Solo Star',
@@ -25,6 +28,8 @@ LAYOUTS: dict[str, dict[str, object]] = {
         'container_class': 'flex',
         'slot_class': 'w-full min-h-[300px]',
         'slots': 1,
+        'export_width': 1200,
+        'export_height': 1600,
     },
     'grid-6': {
         'title': 'Gallery Mix',
@@ -32,6 +37,7 @@ LAYOUTS: dict[str, dict[str, object]] = {
         'container_class': 'grid grid-cols-2 grid-rows-3 gap-2',
         'slot_class': 'aspect-[4/3]',
         'slots': 6,
+        'export_width': 1200,
     },
     'duo-2': {
         'title': 'Duo Story',
@@ -39,6 +45,8 @@ LAYOUTS: dict[str, dict[str, object]] = {
         'container_class': 'flex flex-col gap-3',
         'slot_class': 'w-full aspect-[3/2]',
         'slots': 2,
+        'export_width': 1000,
+        'export_slice_h': 375,
     },
 
 }

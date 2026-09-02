@@ -108,6 +108,9 @@
   class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen dotted-bg flex items-center justify-center p-4 md:p-8 lg:p-12 overflow-x-hidden"
   data-layout-key="{{ layout.key }}"
   data-slot-count="{{ layout.slots }}"
+  data-export-width="{{ layout.export_width|default:'' }}"
+  data-export-height="{{ layout.export_height|default:'' }}"
+  data-export-slice-h="{{ layout.export_slice_h|default:'' }}"
 >
   <canvas id="captureCanvas" class="hidden"></canvas>
   <canvas id="compositeCanvas" class="hidden"></canvas>
@@ -192,23 +195,21 @@
 
     <aside class="w-full md:w-auto flex flex-col items-center max-w-sm mx-auto md:mx-0">
       <div class="bg-white p-5 rounded-2xl shadow-2xl border-b-[12px] border-r-[12px] border-surface-container-highest flex flex-col gap-4 w-full md:w-60 relative">
-        <div class="absolute -top-4 -right-4 w-12 h-12 md:w-14 md:h-14 bg-primary text-white flex items-center justify-center rounded-full rotate-12 font-headline font-bold text-[10px] md:text-xs shadow-lg border-4 border-white z-10">
-          NEW!
-        </div>
+       
         <p class="font-headline font-bold text-primary text-center text-sm tracking-tight">{{ layout.title }}</p>
 
         {% if layout.key == "strip-4" %}
-        <div class="space-y-4" id="slotsContainer">
+        <div class="space-y-2" id="slotsContainer">
         {% elif layout.key == "square-4" %}
-        <div class="grid grid-cols-2 gap-3" id="slotsContainer">
+        <div class="grid grid-cols-2 gap-2" id="slotsContainer">
         {% elif layout.key == "solo-1" %}
-        <div class="space-y-4" id="slotsContainer">
+        <div class="space-y-2" id="slotsContainer">
         {% elif layout.key == "grid-6" %}
         <div class="grid grid-cols-2 grid-rows-3 gap-2" id="slotsContainer">
         {% elif layout.key == "duo-2" %}
-        <div class="flex flex-col gap-3" id="slotsContainer">
+        <div class="flex flex-col gap-2" id="slotsContainer">
         {% else %}
-        <div class="space-y-4" id="slotsContainer">
+        <div class="space-y-2" id="slotsContainer">
         {% endif %}
           {% for i in layout.indexes %}
           <div
@@ -305,7 +306,7 @@
           (c) => c.querySelector(".frame-slot") === slot
         );
         const n = idx >= 0 ? idx + 1 : 1;
-        slot.innerHTML = `<img src="${src}" alt="Capture ${n}" class="w-full h-full object-cover" />`;
+        slot.innerHTML = `<img src="${src}" alt="Capture ${n}" class="w-full h-full object-contain object-center" />`;
         updateDownloadState();
       }
 
@@ -413,30 +414,47 @@
           if (!im) throw new Error("incomplete");
           imgs.push(await loadImage(im.src));
         }
-        const W = 1200;
+        // Respect per-layout export hints provided via data-attributes on `#editorRoot`.
+        const exportWidth = parseInt(root.dataset.exportWidth, 10) || 1200;
+        const exportHeight = parseInt(root.dataset.exportHeight, 10) || null;
+        const exportSliceH = parseInt(root.dataset.exportSliceH, 10) || 540;
+        const W = exportWidth;
         let cw, ch;
-        const pad = 16;
-        const gap = 12;
+        // gap of photo
+        const pad = 46; // increased padding to reduce whitespace
+        const gap = 42; // increased gap between slices
 
         if (layoutKey === "strip-4" || layoutKey === "duo-2") {
-          const sliceH = (W - pad * 2 - gap * (imgs.length - 1)) / imgs.length;
-          cw = W;
-          ch = pad * 2 + imgs.length * sliceH + gap * (imgs.length - 1);
+          // Compute slot width dynamically from image sizes so vertical strips don't
+          // end up with excessive horizontal padding. Start with a base slice height
+          // and compute the width each image would require when fit to that height.
+          const baseSliceH = exportSliceH || 540;
+          let slotW = exportWidth || 720;
+          // compute candidate slotW from images
+          imgs.forEach((img) => {
+            const candidateW = Math.round(img.width * (baseSliceH / img.height));
+            slotW = Math.max(slotW, candidateW);
+          });
+          slotW = Math.min(Math.max(320, slotW), Math.max(1200, exportWidth || 1200));
+          // compute display height per-image when fit to slotW (preserve aspect)
+          const displayHeights = imgs.map((img) => Math.round(img.height * (slotW / img.width)));
+          cw = slotW + pad * 2;
+          ch = pad * 2 + displayHeights.reduce((a, b) => a + b, 0) + gap * (imgs.length - 1);
           compositeCanvas.width = cw;
           compositeCanvas.height = ch;
           const ctx = compositeCanvas.getContext("2d");
           ctx.fillStyle = "#fcf6b9";
           ctx.fillRect(0, 0, cw, ch);
           let y = pad;
-          imgs.forEach((img) => {
-            const tw = W - pad * 2;
-            const th = sliceH;
+          imgs.forEach((img, i) => {
+            const tw = slotW;
+            const th = displayHeights[i];
             ctx.save();
             clipRoundRect(ctx, pad, y, tw, th, 12);
-            const scale = Math.max(tw / img.width, th / img.height);
-            const dw = img.width * scale;
-            const dh = img.height * scale;
-            ctx.drawImage(img, pad + (tw - dw) / 2, y + (th - dh) / 2, dw, dh);
+            // scale to fill width (preserve aspect), height == th
+            const dw = slotW;
+            const dh = Math.round(img.height * (slotW / img.width));
+            ctx.drawImage(img, pad + Math.round((tw - dw) / 2), y + Math.round((th - dh) / 2), dw, dh);
             ctx.restore();
             y += th + gap;
           });
@@ -459,7 +477,7 @@
             const y = pad + row * (cellH + gap);
             ctx.save();
             clipRoundRect(ctx, x, y, cellW, cellH, 12);
-            const scale = Math.max(cellW / img.width, cellH / img.height);
+            const scale = Math.min(cellW / img.width, cellH / img.height);
             const dw = img.width * scale;
             const dh = img.height * scale;
             ctx.drawImage(img, x + (cellW - dw) / 2, y + (cellH - dh) / 2, dw, dh);
