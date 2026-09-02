@@ -108,6 +108,8 @@
   class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen dotted-bg flex items-center justify-center p-4 md:p-8 lg:p-12 overflow-x-hidden"
   data-layout-key="{{ layout.key }}"
   data-slot-count="{{ layout.slots }}"
+  data-pad="{{ layout.pad }}"
+  data-gap="{{ layout.gap }}"
   data-export-width="{{ layout.export_width|default:'' }}"
   data-export-height="{{ layout.export_height|default:'' }}"
   data-export-slice-h="{{ layout.export_slice_h|default:'' }}"
@@ -195,41 +197,9 @@
 
     <aside class="w-full md:w-auto flex flex-col items-center max-w-sm mx-auto md:mx-0">
       <div class="bg-white p-5 rounded-2xl shadow-2xl border-b-[12px] border-r-[12px] border-surface-container-highest flex flex-col gap-4 w-full md:w-60 relative">
-       
         <p class="font-headline font-bold text-primary text-center text-sm tracking-tight">{{ layout.title }}</p>
 
-        {% if layout.key == "strip-4" %}
-        <div class="space-y-2" id="slotsContainer">
-        {% elif layout.key == "square-4" %}
-        <div class="grid grid-cols-2 gap-2" id="slotsContainer">
-        {% elif layout.key == "solo-1" %}
-        <div class="space-y-2" id="slotsContainer">
-        {% elif layout.key == "grid-6" %}
-        <div class="grid grid-cols-2 grid-rows-3 gap-2" id="slotsContainer">
-        {% elif layout.key == "duo-2" %}
-        <div class="flex flex-col gap-2" id="slotsContainer">
-        {% else %}
-        <div class="space-y-2" id="slotsContainer">
-        {% endif %}
-          {% for i in layout.indexes %}
-          <div
-            class="frame-cell relative rounded-xl transition-shadow {% if layout.key == 'strip-4' or layout.key == 'square-4' %}aspect-square{% elif layout.key == 'solo-1' %}min-h-[200px]{% elif layout.key == 'grid-6' %}aspect-[4/3]{% elif layout.key == 'duo-2' %}aspect-[3/2]{% else %}aspect-square{% endif %}"
-            data-slot-index="{{ forloop.counter0 }}"
-          >
-            <input class="hidden image-input" type="file" accept="image/*" />
-            <div
-              class="frame-slot w-full h-full rounded-xl overflow-hidden border-2 border-dashed border-outline-variant bg-surface-container-low relative cursor-pointer select-none touch-manipulation min-h-[100px]"
-            ></div>
-            <button
-              type="button"
-              class="upload-btn absolute bottom-2 right-2 z-10 w-9 h-9 rounded-full bg-white/90 shadow-md border border-outline-variant/40 flex items-center justify-center hover:bg-white"
-              title="Upload photo"
-            >
-              <span class="material-symbols-outlined text-on-surface text-xl">add_photo_alternate</span>
-            </button>
-          </div>
-          {% endfor %}
-        </div>
+        {% include layout.template %}
 
         <div class="mt-2 border-t-2 border-dashed border-surface-container-highest pt-4 text-center">
           <p class="font-headline font-black text-primary text-lg md:text-2xl tracking-tighter uppercase italic">Dreamy Vibes</p>
@@ -418,11 +388,11 @@
         const exportWidth = parseInt(root.dataset.exportWidth, 10) || 1200;
         const exportHeight = parseInt(root.dataset.exportHeight, 10) || null;
         const exportSliceH = parseInt(root.dataset.exportSliceH, 10) || 540;
+        // Per-layout padding (around photos) and gap (between photos)
+        const pad = parseInt(root.dataset.pad, 10) || 16;
+        const gap = parseInt(root.dataset.gap, 10) || 8;
         const W = exportWidth;
         let cw, ch;
-        // gap of photo
-        const pad = 46; // increased padding to reduce whitespace
-        const gap = 42; // increased gap between slices
 
         if (layoutKey === "strip-4" || layoutKey === "duo-2") {
           // Compute slot width dynamically from image sizes so vertical strips don't
@@ -430,13 +400,11 @@
           // and compute the width each image would require when fit to that height.
           const baseSliceH = exportSliceH || 540;
           let slotW = exportWidth || 720;
-          // compute candidate slotW from images
           imgs.forEach((img) => {
             const candidateW = Math.round(img.width * (baseSliceH / img.height));
             slotW = Math.max(slotW, candidateW);
           });
           slotW = Math.min(Math.max(320, slotW), Math.max(1200, exportWidth || 1200));
-          // compute display height per-image when fit to slotW (preserve aspect)
           const displayHeights = imgs.map((img) => Math.round(img.height * (slotW / img.width)));
           cw = slotW + pad * 2;
           ch = pad * 2 + displayHeights.reduce((a, b) => a + b, 0) + gap * (imgs.length - 1);
@@ -451,7 +419,6 @@
             const th = displayHeights[i];
             ctx.save();
             clipRoundRect(ctx, pad, y, tw, th, 12);
-            // scale to fill width (preserve aspect), height == th
             const dw = slotW;
             const dh = Math.round(img.height * (slotW / img.width));
             ctx.drawImage(img, pad + Math.round((tw - dw) / 2), y + Math.round((th - dh) / 2), dw, dh);
@@ -461,7 +428,7 @@
         } else if (layoutKey === "square-4" || layoutKey === "grid-6") {
           const cols = 2;
           const rows = layoutKey === "square-4" ? 2 : 3;
-          const cellW = (W - pad * 2 - gap) / cols;
+          const cellW = (W - pad * 2 - (cols - 1) * gap) / cols;
           const cellH = cellW;
           cw = W;
           ch = pad * 2 + rows * cellH + (rows - 1) * gap;
@@ -484,17 +451,21 @@
             ctx.restore();
           });
         } else {
+          // Solo — padding around the photo (gap unused)
           const img = imgs[0];
           const maxH = 1600;
-          const ratio = Math.min(W / img.width, maxH / img.height);
-          cw = Math.round(img.width * ratio);
-          ch = Math.round(img.height * ratio);
+          const innerW = Math.max(320, W - pad * 2);
+          const ratio = Math.min(innerW / img.width, maxH / img.height);
+          const iw = Math.round(img.width * ratio);
+          const ih = Math.round(img.height * ratio);
+          cw = iw + pad * 2;
+          ch = ih + pad * 2;
           compositeCanvas.width = cw;
           compositeCanvas.height = ch;
           const ctx = compositeCanvas.getContext("2d");
           ctx.fillStyle = "#fcf6b9";
           ctx.fillRect(0, 0, cw, ch);
-          ctx.drawImage(img, 0, 0, cw, ch);
+          ctx.drawImage(img, pad, pad, iw, ih);
         }
 
         return new Promise((resolve) => {

@@ -1,0 +1,10 @@
+{# Gallery Mix — 6 frames in a 2x3 grid. Own pad/gap: see layout.pad / layout.gap #}
+<div
+  id="slotsContainer"
+  class="grid grid-cols-2 grid-rows-3 bg-surface-container rounded-xl"
+  style="gap: {{ layout.preview_gap }}px; padding: {{ layout.preview_pad }}px;"
+>
+  {% for i in layout.indexes %}
+    {% include "frame/partials/slot.html" with index=forloop.counter0 cell_class="aspect-[4/3]" %}
+  {% endfor %}
+</div>
