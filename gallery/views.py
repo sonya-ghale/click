@@ -4,68 +4,92 @@ from typing import cast
 from .forms import PhotoForm
 from .models import Photo
 
+# pad = space around the photos, gap = space between photos (pixels, preview and download)
+# cols/rows = how photos are arranged in the downloaded image
 LAYOUTS: dict[str, dict[str, object]] = {
     'strip-4': {
         'title': 'Photo Strip',
         'subtitle': '4 frames in a vertical strip',
         'slots': 4,
-        # Export spacing (pixels on the downloaded image)
-        'pad': 46,
-        'gap': 42,
-        # Preview spacing on the editor card (scaled down)
-        'preview_pad': 14,
-        'preview_gap': 12,
-        'export_width': 720,
-        'export_slice_h': 540,
+        'pad': 6,
+        'gap': 6,
+        'cols': 1,
+        'rows': 4,
         'template': 'frame/layouts/strip_4.html',
     },
     'square-4': {
         'title': 'Square 2x2',
         'subtitle': '4 frames in a square grid',
         'slots': 4,
-        'pad': 24,
-        'gap': 16,
-        'preview_pad': 12,
-        'preview_gap': 8,
-        'export_width': 1200,
+        'pad': 6,
+        'gap': 6,
+        'cols': 2,
+        'rows': 2,
         'template': 'frame/layouts/square_4.html',
     },
     'solo-1': {
         'title': 'Solo Star',
         'subtitle': 'Single portrait frame',
         'slots': 1,
-        'pad': 48,
-        'gap': 0,
-        'preview_pad': 16,
-        'preview_gap': 0,
-        'export_width': 1200,
-        'export_height': 1600,
+        'pad': 6,
+        'gap': 6,
+        'cols': 1,
+        'rows': 1,
         'template': 'frame/layouts/solo_1.html',
     },
     'grid-6': {
         'title': 'Gallery Mix',
         'subtitle': '6 frames in a 2x3 grid',
         'slots': 6,
-        'pad': 20,
-        'gap': 12,
-        'preview_pad': 10,
-        'preview_gap': 6,
-        'export_width': 1200,
+        'pad': 6,
+        'gap': 6,
+        'cols': 2,
+        'rows': 3,
         'template': 'frame/layouts/grid_6.html',
     },
     'duo-2': {
         'title': 'Duo Story',
         'subtitle': '2 landscape frames',
         'slots': 2,
-        'pad': 40,
-        'gap': 32,
-        'preview_pad': 14,
-        'preview_gap': 10,
-        'export_width': 1000,
-        'export_slice_h': 375,
+        'pad': 6,
+        'gap': 6,
+        'cols': 1,
+        'rows': 2,
         'template': 'frame/layouts/duo_2.html',
     },
 }
+
+
+# Download sizes: output keeps each kiosk's width:height proportion (mid-range of its dimensions)
+DOWNLOAD_SIZES: list[dict[str, object]] = [
+    {
+        'key': 'slim-pillar',
+        'title': 'Slim / iPad Pillar Booth',
+        'dimensions': '45–60 cm W × 45–60 cm D × 1.6–1.8 m H',
+        'best_for': 'Sleek modern look, tablet-based setups, easy transport',
+        'icon': 'tablet_android',
+        'width': 740,
+        'height': 2400,
+    },
+    {
+        'key': 'dslr-tower',
+        'title': 'Heavy-Duty DSLR Tower',
+        'dimensions': '60–75 cm W × 60 cm D × 1.7–2.0 m H',
+        'best_for': 'Professional DSLR cameras, internal sub-dye printers, ring lights',
+        'icon': 'photo_camera',
+        'width': 876,
+        'height': 2400,
+    },
+    {
+        'key': 'tabletop',
+        'title': 'Tabletop / Countertop Unit',
+        'dimensions': '45 cm W × 30 cm D × 60–75 cm H',
+        'best_for': 'Placed on a bar, desk, or tripod; ultra-portable',
+        'icon': 'desktop_windows',
+        'width': 1600,
+        'height': 2400,
+    },
+]
 
 
 def _photo_file_exists(photo):
@@ -118,7 +142,12 @@ def frame_editor(request):
     layout: dict[str, object] = LAYOUTS.get(key, LAYOUTS['strip-4']).copy()
     layout['key'] = key if key in LAYOUTS else 'strip-4'
     layout['indexes'] = range(cast(int, layout['slots']))
-    return render(request, "frame/editor.html", {'layout': layout})
+    layouts = [{'key': k, 'title': v['title']} for k, v in LAYOUTS.items()]
+    return render(
+        request,
+        "frame/editor.html",
+        {'layout': layout, 'layouts': layouts, 'download_sizes': DOWNLOAD_SIZES},
+    )
 
 
 def page_dashboard(request):

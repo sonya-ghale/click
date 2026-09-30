@@ -76,167 +76,282 @@
     };
   </script>
   <style>
-    .dotted-bg {
-      background-image: radial-gradient(#c0bb8a 2px, transparent 2px);
-      background-size: 32px 32px;
-    }
     .material-symbols-outlined {
       font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
     }
-    .camera-lens-border {
+    .booth-bezel {
       box-shadow:
-        0 0 0 12px #f1eba6,
-        0 0 0 16px #c0bb8a,
-        0 20px 50px rgba(0, 0, 0, 0.1);
+        0 0 0 10px #fbf5cf,
+        0 0 0 12px #efe7b4,
+        0 30px 60px rgba(60, 57, 20, 0.12);
     }
-    #boothVideo {
-      display: block;
+    .frame-cell .corner {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-color: rgba(255, 255, 255, 0.25);
+      z-index: 10;
+      pointer-events: none;
     }
-    .frame-slot .slot-live {
+    .frame-cell .slot-label {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .frame-cell:hover .upload-btn {
+      opacity: 1;
+    }
+    .frame-cell.slot-active {
+      border-style: solid;
+      border-color: #c2527f;
+      box-shadow: 0 0 0 1px #c2527f;
+    }
+    .frame-cell.slot-active .corner {
+      border-color: rgba(194, 82, 127, 0.8);
+    }
+    .frame-cell.slot-active .slot-label {
+      background: #a73d76;
+      color: #fff;
+    }
+    .frame-cell.slot-active .slot-dot {
+      display: inline-block;
+    }
+    .frame-cell.slot-filled {
+      border-style: solid;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .frame-slot video,
+    .frame-slot img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
-    .slot-active .frame-slot {
-      box-shadow: 0 0 0 3px #a73d76;
+    #boothVideo.mirrored {
+      transform: scaleX(-1);
     }
   </style>
 </head>
 <body
   id="editorRoot"
-  class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen dotted-bg flex items-center justify-center p-4 md:p-8 lg:p-12 overflow-x-hidden"
+  class="bg-[#f6f5f0] text-on-background font-body h-screen flex flex-col items-center px-4 md:px-8 pt-16 pb-6 overflow-x-hidden"
   data-layout-key="{{ layout.key }}"
   data-slot-count="{{ layout.slots }}"
   data-pad="{{ layout.pad }}"
   data-gap="{{ layout.gap }}"
-  data-export-width="{{ layout.export_width|default:'' }}"
-  data-export-height="{{ layout.export_height|default:'' }}"
-  data-export-slice-h="{{ layout.export_slice_h|default:'' }}"
+  data-cols="{{ layout.cols }}"
+  data-rows="{{ layout.rows }}"
 >
   <canvas id="captureCanvas" class="hidden"></canvas>
   <canvas id="compositeCanvas" class="hidden"></canvas>
+  <div id="videoParking" class="hidden">
+    <video id="boothVideo" class="mirrored" playsinline muted autoplay></video>
+  </div>
 
-  <main class="w-full max-w-7xl flex flex-col md:flex-row gap-8 lg:gap-16 items-center justify-center">
-    <section class="flex-1 flex flex-col items-center gap-8 md:gap-10 w-full max-w-2xl">
-      <div class="relative w-full aspect-[4/3] bg-surface-container-low rounded-[3.5rem] p-4 md:p-6 camera-lens-border flex items-center justify-center overflow-hidden">
-        <div class="relative w-full h-full rounded-[2.5rem] overflow-hidden bg-black ring-8 ring-white/10 shadow-inner">
-          <video
-            id="boothVideo"
-            class="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none transition-opacity duration-300"
-            playsinline
-            muted
-            autoplay
-          ></video>
-          <div id="viewfinderIdle" class="absolute inset-0 bg-black flex flex-col items-center justify-center gap-4">
-            <span class="material-symbols-outlined text-white/40 text-6xl">photo_camera</span>
-            <p class="text-white/60 font-label text-sm text-center px-6">Select a slot on the right, then tap the shutter</p>
-          </div>
-          <div id="countdownOverlay" class="hidden absolute inset-0 bg-black/80 flex items-center justify-center z-20">
-            <div
-              id="countdownNumber"
-              class="bg-primary/95 text-white font-headline text-7xl md:text-8xl font-black w-36 h-36 md:w-44 md:h-44 flex items-center justify-center rounded-full shadow-[0px_10px_0px_#570037] border-4 border-white"
-            >
-              3
-            </div>
-          </div>
-          <div class="absolute top-6 md:top-8 left-6 md:left-8 bg-black/50 backdrop-blur-md px-4 md:px-5 py-2 rounded-full border border-white/20 z-10">
-            <span class="text-white font-label text-xs md:text-sm font-bold tracking-[0.08em]">{{ layout.title }}</span>
-          </div>
-          <div class="absolute bottom-6 md:bottom-8 right-6 md:right-8 flex gap-2 md:gap-3 z-10 pointer-events-none">
-            <div class="px-3 py-1.5 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-label text-[9px] md:text-[10px] uppercase font-bold tracking-widest">ISO 200</div>
-            <div class="px-3 py-1.5 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-label text-[9px] md:text-[10px] uppercase font-bold tracking-widest">HD</div>
-          </div>
-          <div class="absolute top-6 md:top-8 right-6 md:right-8 flex flex-col gap-3 z-10">
-            <a
-              href="{% url 'gallery:frames' %}"
-              class="w-11 h-11 rounded-full bg-white/20 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/40 transition-all border border-white/30"
-              title="Back to layouts"
-            >
-              <span class="material-symbols-outlined text-xl">arrow_back</span>
-            </a>
-            <button type="button" id="gridHintBtn" class="w-11 h-11 rounded-full bg-white/20 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/40 transition-all border border-white/30" title="Layout">
-              <span class="material-symbols-outlined text-xl">grid_4x4</span>
-            </button>
-          </div>
+  <div class="fixed top-5 left-5 z-30 flex items-center gap-3">
+    <a
+      href="{% url 'gallery:frames' %}"
+      class="flex items-center gap-1.5 pl-2 pr-3.5 py-1.5 rounded-full bg-white border border-black/5 shadow-sm font-label text-[11px] font-bold text-on-surface hover:bg-surface-container-low transition"
+      title="Back to layouts"
+    >
+      <span class="material-symbols-outlined text-base">arrow_back</span>
+      Back
+    </a>
+    <div class="hidden sm:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#ecebe4] border border-black/5 font-label text-[10px] font-bold uppercase tracking-wider text-on-surface/70">
+      <span id="camDot" class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
+      <span id="camStatus">Cam 01 Off</span>
+      <span class="text-on-surface/30">|</span>
+      <span id="slotStatus">Slot 1 / {{ layout.slots }} Active</span>
+    </div>
+  </div>
+
+  <label class="fixed top-5 right-5 z-30 flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-full bg-white border border-black/5 shadow-sm font-label text-[11px] font-bold text-on-surface cursor-pointer">
+    <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+    <select id="layoutSelect" class="appearance-none bg-transparent bg-none border-0 p-0 pr-5 text-[11px] font-bold focus:ring-0 cursor-pointer">
+      {% for l in layouts %}
+        <option value="{{ l.key }}" {% if l.key == layout.key %}selected{% endif %}>{{ l.title }} Layout</option>
+      {% endfor %}
+    </select>
+    <span class="material-symbols-outlined text-base -ml-5 pointer-events-none text-on-surface/50">expand_more</span>
+  </label>
+
+  <main class="w-full max-w-7xl flex-1 min-h-0 flex flex-col items-center gap-6">
+    <div class="booth-bezel w-full flex-1 min-h-[360px] rounded-[2.5rem] bg-[#0b0b0b] p-5 md:p-7 flex flex-col gap-4 relative">
+      <div class="flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <span class="px-3.5 py-1.5 rounded-full bg-white/[0.06] border border-white/10 text-white font-headline text-xs font-bold">{{ layout.title }}</span>
+          <span id="liveChip" class="flex items-center gap-1.5 px-2 py-1 rounded-full text-white/40 font-label text-[9px] font-bold uppercase tracking-wider">
+            <span id="liveDot" class="w-1.5 h-1.5 rounded-full bg-white/30"></span>
+            <span id="liveText">Idle</span>
+          </span>
         </div>
-      </div>
-
-      <div class="flex items-center gap-6 md:gap-10 lg:gap-12">
-        <button
-          type="button"
-          id="resetBtn"
-          class="w-14 h-14 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-[0px_6px_0px_#868256] border-2 border-white"
-          title="Clear all"
-        >
-          <span class="material-symbols-outlined text-2xl">close</span>
-        </button>
-        <div class="relative group">
-          <div class="absolute inset-0 bg-primary/30 rounded-full blur-2xl animate-pulse group-hover:scale-125 transition-transform pointer-events-none"></div>
-          <button
-            type="button"
-            id="shutterBtn"
-            class="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-primary p-2 shadow-[0px_10px_0px_#570037] border-4 border-white active:translate-y-2 active:shadow-[0px_4px_0px_#570037] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            title="Capture to active slot"
+        <div class="flex items-center gap-2">
+          <a
+            href="{% url 'gallery:frames' %}"
+            class="w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 text-white flex items-center justify-center hover:bg-white/15 transition"
+            title="Back to layouts"
           >
-            <div class="w-full h-full rounded-full bg-primary-container border-2 border-primary flex items-center justify-center">
-              <span class="material-symbols-outlined text-white text-3xl md:text-4xl" style="font-variation-settings: 'FILL' 1">photo_camera</span>
-            </div>
+            <span class="material-symbols-outlined text-lg">arrow_back</span>
+          </a>
+          <button type="button" id="gridHintBtn" class="w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 text-white flex items-center justify-center hover:bg-white/15 transition" title="Layout info">
+            <span class="material-symbols-outlined text-lg">grid_view</span>
           </button>
         </div>
-        <button
-          type="button"
-          id="switchCameraBtn"
-          class="w-14 h-14 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-[0px_6px_0px_#868256] border-2 border-white"
-          title="Switch camera"
-        >
-          <span class="material-symbols-outlined text-2xl">cached</span>
-        </button>
       </div>
-    </section>
 
-    <aside class="w-full md:w-auto flex flex-col items-center max-w-sm mx-auto md:mx-0">
-      <div class="bg-white p-5 rounded-2xl shadow-2xl border-b-[12px] border-r-[12px] border-surface-container-highest flex flex-col gap-4 w-full md:w-60 relative">
-        <p class="font-headline font-bold text-primary text-center text-sm tracking-tight">{{ layout.title }}</p>
-
+      <div class="flex-1 min-h-0 relative">
         {% include layout.template %}
 
-        <div class="mt-2 border-t-2 border-dashed border-surface-container-highest pt-4 text-center">
-          <p class="font-headline font-black text-primary text-lg md:text-2xl tracking-tighter uppercase italic">Dreamy Vibes</p>
-          <p class="font-label text-on-surface-variant text-[10px] mt-1">{{ layout.subtitle }}</p>
+        <div id="countdownOverlay" class="hidden absolute inset-0 z-20 bg-black/70 rounded-xl flex items-center justify-center">
+          <div
+            id="countdownNumber"
+            class="bg-primary text-white font-headline text-6xl md:text-7xl font-black w-28 h-28 md:w-32 md:h-32 flex items-center justify-center rounded-full shadow-[0px_8px_0px_#570037] border-4 border-white"
+          >3</div>
         </div>
       </div>
 
-      <div class="mt-8 flex flex-col gap-4 w-full md:w-60">
+      <div class="flex justify-end gap-2 shrink-0 pointer-events-none">
+        <span class="px-3 py-1 rounded-lg border border-white/15 text-white/70 font-mono text-[9px] font-bold uppercase tracking-widest">ISO 200</span>
+        <span class="px-3 py-1 rounded-lg border border-white/15 text-white/70 font-mono text-[9px] font-bold uppercase tracking-widest">HD</span>
+      </div>
+    </div>
+
+    <div class="shrink-0 flex flex-wrap items-center justify-center gap-6 sm:gap-8 pt-2">
+      <button
+        type="button"
+        id="resetBtn"
+        class="w-11 h-11 rounded-full bg-[#ece6b4] text-on-surface flex items-center justify-center hover:scale-110 active:scale-95 transition shadow-[0_4px_0_#c0bb8a]"
+        title="Clear all"
+      >
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+      <button
+        type="button"
+        id="shutterBtn"
+        class="w-16 h-16 rounded-full bg-[#e56a9a] ring-4 ring-[#4a0f2c] ring-offset-4 ring-offset-[#f6d9e5] flex items-center justify-center shadow-lg hover:brightness-105 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        title="Capture to active slot"
+      >
+        <span class="material-symbols-outlined text-white text-3xl">photo_camera</span>
+      </button>
+      <button
+        type="button"
+        id="switchCameraBtn"
+        class="w-11 h-11 rounded-full bg-[#ece6b4] text-on-surface flex items-center justify-center hover:scale-110 active:scale-95 transition shadow-[0_4px_0_#c0bb8a]"
+        title="Switch camera"
+      >
+        <span class="material-symbols-outlined text-xl">cached</span>
+      </button>
+
+      <span class="hidden sm:block w-px h-10 bg-on-surface/10"></span>
+
+      <div class="flex items-center gap-3">
+        <button
+          type="button"
+          id="previewBtn"
+          disabled
+          class="h-12 pl-4 pr-5 rounded-full bg-white border border-black/5 text-on-surface font-headline font-bold text-sm flex items-center gap-2 shadow-[0_4px_0_#e2dfd0] hover:bg-surface-container-low active:translate-y-0.5 active:shadow-[0_2px_0_#e2dfd0] transition disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-y-0"
+          title="Preview before downloading"
+        >
+          <span class="material-symbols-outlined text-xl">visibility</span>
+          Preview
+        </button>
         <button
           type="button"
           id="downloadBtn"
           disabled
-          class="w-full py-4 bg-secondary text-on-secondary font-headline font-bold rounded-2xl shadow-[0px_6px_0px_#1c5d3b] hover:translate-y-1 hover:shadow-[0px_2px_0px_#1c5d3b] transition-all flex items-center justify-center gap-3 border-2 border-white/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+          class="h-12 pl-4 pr-5 rounded-full bg-secondary text-white font-headline font-bold text-sm flex items-center gap-2 shadow-[0_4px_0_#1c5d3b] hover:brightness-110 active:translate-y-0.5 active:shadow-[0_2px_0_#1c5d3b] transition disabled:bg-[#c9c6b3] disabled:shadow-[0_4px_0_#a8a590] disabled:cursor-not-allowed disabled:active:translate-y-0"
+          title="Download your photo"
         >
-          <span class="material-symbols-outlined text-2xl">download</span>
-          SAVE LAYOUT
+          <span class="material-symbols-outlined text-xl">download</span>
+          <span id="downloadLabel">Download</span>
         </button>
         <button
           type="button"
           id="shareBtn"
-          class="w-full py-4 bg-tertiary text-on-tertiary font-headline font-bold rounded-2xl shadow-[0px_6px_0px_#3e1975] hover:translate-y-1 hover:shadow-[0px_2px_0px_#3e1975] transition-all flex items-center justify-center gap-3 border-2 border-white/20"
+          class="w-12 h-12 rounded-full bg-white border border-black/5 text-tertiary flex items-center justify-center shadow-[0_4px_0_#e2dfd0] hover:scale-105 transition"
+          title="Share"
         >
-          <span class="material-symbols-outlined text-2xl">share</span>
-          SHARE
+          <span class="material-symbols-outlined text-xl">share</span>
         </button>
       </div>
-    </aside>
+    </div>
   </main>
 
-  <div class="fixed top-12 left-12 pointer-events-none hidden lg:block">
-    <div class="bg-surface-container-high p-4 rounded-2xl border-2 border-primary rotate-[-12deg] shadow-xl animate-bounce">
-      <span class="material-symbols-outlined text-primary text-5xl">auto_awesome</span>
+  <div id="previewModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl max-h-full bg-white rounded-3xl shadow-2xl p-5 md:p-6 flex flex-col gap-4">
+      <div class="flex items-center justify-between gap-4 shrink-0">
+        <div>
+          <h2 class="font-headline font-extrabold text-xl text-on-surface">Preview</h2>
+          <p class="font-label text-xs text-on-surface-variant mt-0.5">This is exactly how your download will look.</p>
+        </div>
+        <button type="button" id="previewClose" class="w-9 h-9 rounded-full bg-surface-container-low text-on-surface flex items-center justify-center hover:bg-surface-container transition" title="Close">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <div class="flex flex-wrap gap-2 shrink-0" role="group" aria-label="Download size">
+        {% for size in download_sizes %}
+          <button
+            type="button"
+            class="preview-size px-3.5 py-2 rounded-full border-2 border-surface-container-highest font-label text-xs font-bold text-on-surface-variant hover:border-primary/50 transition"
+            data-size-key="{{ size.key }}"
+            data-width="{{ size.width }}"
+            data-height="{{ size.height }}"
+          >
+            {{ size.title }}
+            <span class="font-mono font-normal opacity-60 ml-1">{{ size.width }}×{{ size.height }}</span>
+          </button>
+        {% endfor %}
+      </div>
+
+      <div class="flex-1 min-h-0 rounded-2xl bg-[#f6f5f0] border border-black/5 flex items-center justify-center p-4 overflow-hidden">
+        <img id="previewImage" alt="Preview of your photo layout" class="max-w-full max-h-[60vh] object-contain rounded-md shadow-lg" />
+        <p id="previewLoading" class="font-label text-xs text-on-surface-variant">Rendering…</p>
+      </div>
+
+      <div class="flex justify-end gap-3 shrink-0">
+        <button type="button" id="previewCancel" class="h-11 px-5 rounded-full bg-surface-container-low text-on-surface font-headline font-bold text-sm hover:bg-surface-container transition">
+          Keep editing
+        </button>
+        <button type="button" id="previewDownload" class="h-11 pl-4 pr-5 rounded-full bg-secondary text-white font-headline font-bold text-sm flex items-center gap-2 shadow-[0_4px_0_#1c5d3b] hover:brightness-110 transition">
+          <span class="material-symbols-outlined text-xl">download</span>
+          Download this size
+        </button>
+      </div>
     </div>
   </div>
-  <div class="fixed bottom-12 right-12 pointer-events-none hidden lg:block">
-    <div class="bg-secondary-container p-4 rounded-2xl border-2 border-secondary rotate-[8deg] shadow-xl">
-      <span class="material-symbols-outlined text-secondary text-5xl">favorite</span>
+
+  <div id="sizeModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-white rounded-3xl shadow-2xl p-6 md:p-7">
+      <div class="flex items-start justify-between gap-4 mb-5">
+        <div>
+          <h2 class="font-headline font-extrabold text-xl text-on-surface">Save your photo</h2>
+          <p class="font-label text-xs text-on-surface-variant mt-1">Pick the booth size to download in.</p>
+        </div>
+        <button type="button" id="sizeModalClose" class="w-9 h-9 rounded-full bg-surface-container-low text-on-surface flex items-center justify-center hover:bg-surface-container transition" title="Close">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+      <div class="flex flex-col gap-3">
+        {% for size in download_sizes %}
+          <button
+            type="button"
+            class="size-option group flex items-center gap-4 text-left p-4 rounded-2xl border-2 border-surface-container-highest hover:border-primary hover:bg-primary/5 transition"
+            data-size-key="{{ size.key }}"
+            data-width="{{ size.width }}"
+            data-height="{{ size.height }}"
+          >
+            <span class="shrink-0 w-12 h-12 rounded-xl bg-surface-container-low text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition">
+              <span class="material-symbols-outlined">{{ size.icon }}</span>
+            </span>
+            <span class="flex-1 min-w-0">
+              <span class="block font-headline font-bold text-sm text-on-surface">{{ forloop.counter }}. {{ size.title }}</span>
+              <span class="block font-label text-[11px] text-on-surface-variant mt-0.5">{{ size.dimensions }}</span>
+              <span class="block font-label text-[11px] text-on-surface-variant/70 mt-0.5">{{ size.best_for }}</span>
+            </span>
+            <span class="shrink-0 font-mono text-[10px] text-on-surface-variant/70">{{ size.width }}×{{ size.height }}</span>
+          </button>
+        {% endfor %}
+      </div>
     </div>
   </div>
 
@@ -245,7 +360,7 @@
       const captureCanvas = document.getElementById("captureCanvas");
       const compositeCanvas = document.getElementById("compositeCanvas");
       const boothVideo = document.getElementById("boothVideo");
-      const viewfinderIdle = document.getElementById("viewfinderIdle");
+      const videoParking = document.getElementById("videoParking");
       const countdownOverlay = document.getElementById("countdownOverlay");
       const countdownNumber = document.getElementById("countdownNumber");
       const shutterBtn = document.getElementById("shutterBtn");
@@ -258,26 +373,75 @@
       const slotCount = parseInt(root.dataset.slotCount || "4", 10);
 
       const cells = () => [...document.querySelectorAll(".frame-cell")];
+      const captures = new Array(slotCount).fill(null);
       let stream = null;
+      let cameraError = false;
       let facingMode = "user";
       let activeSlotIndex = 0;
+      let countingDown = false;
 
-      function renderPlaceholder(slot, index) {
-        slot.innerHTML = `
-          <div class="w-full h-full flex flex-col items-center justify-center gap-1 text-outline-variant opacity-80">
-            <span class="material-symbols-outlined text-4xl">add_a_photo</span>
-            <span class="font-label text-[10px] font-bold uppercase tracking-tighter">Slot ${index + 1}</span>
-          </div>
-        `;
+      function placeholderHtml(icon, text) {
+        return `
+          <div class="w-full h-full flex flex-col items-center justify-center gap-2 text-white/40">
+            <span class="w-9 h-9 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center">
+              <span class="material-symbols-outlined text-lg">${icon}</span>
+            </span>
+            <span class="font-label text-[10px]">${text}</span>
+          </div>`;
       }
 
-      function setSlotImage(slot, src) {
-        const idx = [...document.querySelectorAll(".frame-cell")].findIndex(
-          (c) => c.querySelector(".frame-slot") === slot
-        );
-        const n = idx >= 0 ? idx + 1 : 1;
-        slot.innerHTML = `<img src="${src}" alt="Capture ${n}" class="w-full h-full object-contain object-center" />`;
-        updateDownloadState();
+      function render() {
+        videoParking.appendChild(boothVideo);
+
+        cells().forEach((cell, i) => {
+          const slot = cell.querySelector(".frame-slot");
+          const status = cell.querySelector(".slot-status");
+          const rec = cell.querySelector(".slot-rec");
+          const active = i === activeSlotIndex;
+          const live = active && stream && !captures[i];
+
+          cell.classList.toggle("slot-active", active);
+          cell.classList.toggle("slot-filled", !!captures[i]);
+          rec.classList.toggle("hidden", !live);
+
+          if (captures[i]) {
+            slot.innerHTML = `<img src="${captures[i]}" alt="Capture ${i + 1}" />`;
+            status.textContent = "Captured";
+            status.className = "slot-status absolute top-3 right-3 z-10 font-mono text-[8px] font-bold uppercase tracking-widest text-secondary-fixed-dim";
+          } else if (live) {
+            slot.innerHTML = "";
+            slot.appendChild(boothVideo);
+            boothVideo.play().catch(() => {});
+            status.textContent = "Live feed";
+            status.className = "slot-status absolute top-3 right-3 z-10 font-mono text-[8px] font-bold uppercase tracking-widest text-emerald-400";
+          } else {
+            let icon = "photo_camera";
+            let text = "Awaiting capture";
+            if (active && cameraError) {
+              icon = "no_photography";
+              text = "Camera unavailable — upload instead";
+            } else if (active) {
+              text = "Tap shutter to start";
+            }
+            slot.innerHTML = placeholderHtml(icon, text);
+            status.textContent = "Ready";
+            status.className = "slot-status absolute top-3 right-3 z-10 font-mono text-[8px] font-bold uppercase tracking-widest text-white/40";
+          }
+        });
+
+        document.getElementById("camStatus").textContent = stream ? "Cam 01 Ready" : "Cam 01 Off";
+        document.getElementById("camDot").className = "w-1.5 h-1.5 rounded-full " + (stream ? "bg-emerald-500" : "bg-outline-variant");
+        document.getElementById("slotStatus").textContent = `Slot ${activeSlotIndex + 1} / ${slotCount} Active`;
+        document.getElementById("liveText").textContent = stream ? "Live" : "Idle";
+        document.getElementById("liveDot").className = "w-1.5 h-1.5 rounded-full " + (stream ? "bg-emerald-400" : "bg-white/30");
+        document.getElementById("liveChip").classList.toggle("text-emerald-400", !!stream);
+        document.getElementById("liveChip").classList.toggle("text-white/40", !stream);
+
+        const filled = captures.filter(Boolean).length;
+        downloadBtn.disabled = filled < slotCount;
+        document.getElementById("previewBtn").disabled = filled < slotCount;
+        document.getElementById("downloadLabel").textContent =
+          filled < slotCount ? `Download · ${filled}/${slotCount}` : "Download";
       }
 
       function clipRoundRect(ctx, x, y, w, h, r) {
@@ -296,8 +460,6 @@
           stream = null;
         }
         boothVideo.srcObject = null;
-        boothVideo.classList.add("opacity-0", "pointer-events-none");
-        viewfinderIdle.classList.remove("hidden");
       }
 
       async function startCamera() {
@@ -307,37 +469,46 @@
             video: { facingMode },
             audio: false,
           });
+          cameraError = false;
           boothVideo.srcObject = stream;
-          boothVideo.classList.remove("opacity-0", "pointer-events-none");
-          viewfinderIdle.classList.add("hidden");
-          await boothVideo.play();
+          boothVideo.classList.toggle("mirrored", facingMode === "user");
         } catch (e) {
-          viewfinderIdle.innerHTML = `
-            <span class="material-symbols-outlined text-error text-5xl">no_photography</span>
-            <p class="text-error-container font-label text-sm text-center px-4">Camera unavailable. Allow access or use Upload on a slot.</p>
-          `;
+          stream = null;
+          cameraError = true;
         }
+        render();
       }
 
       function setActiveSlot(i) {
-        activeSlotIndex = Math.max(0, Math.min(i, cells().length - 1));
-        cells().forEach((c, idx) => {
-          c.classList.toggle("slot-active", idx === activeSlotIndex);
-        });
+        activeSlotIndex = Math.max(0, Math.min(i, slotCount - 1));
+        render();
       }
 
       function captureFromBooth() {
         if (!boothVideo.videoWidth || !stream) return false;
         captureCanvas.width = boothVideo.videoWidth;
         captureCanvas.height = boothVideo.videoHeight;
-        captureCanvas.getContext("2d").drawImage(boothVideo, 0, 0);
-        const dataUrl = captureCanvas.toDataURL("image/jpeg", 0.92);
-        const slot = cells()[activeSlotIndex].querySelector(".frame-slot");
-        setSlotImage(slot, dataUrl);
+        const ctx = captureCanvas.getContext("2d");
+        ctx.save();
+        if (facingMode === "user") {
+          ctx.translate(captureCanvas.width, 0);
+          ctx.scale(-1, 1);
+        }
+        ctx.drawImage(boothVideo, 0, 0);
+        ctx.restore();
+        captures[activeSlotIndex] = captureCanvas.toDataURL("image/jpeg", 0.92);
         return true;
       }
 
+      function nextEmptySlot() {
+        const after = captures.findIndex((c, i) => i > activeSlotIndex && !c);
+        return after >= 0 ? after : captures.findIndex((c) => !c);
+      }
+
       function runCountdownThenCapture() {
+        if (countingDown) return;
+        countingDown = true;
+        shutterBtn.disabled = true;
         let n = 3;
         countdownOverlay.classList.remove("hidden");
         countdownNumber.textContent = String(n);
@@ -347,12 +518,11 @@
             clearInterval(id);
             countdownOverlay.classList.add("hidden");
             captureFromBooth();
-            const next = cells().findIndex((c, i) => i > activeSlotIndex && !c.querySelector(".frame-slot img"));
-            if (next >= 0) setActiveSlot(next);
-            else {
-              const firstEmpty = cells().findIndex((c) => !c.querySelector(".frame-slot img"));
-              if (firstEmpty >= 0) setActiveSlot(firstEmpty);
-            }
+            const next = nextEmptySlot();
+            if (next >= 0) activeSlotIndex = next;
+            countingDown = false;
+            shutterBtn.disabled = false;
+            render();
           } else {
             countdownNumber.textContent = String(n);
           }
@@ -360,11 +530,7 @@
       }
 
       function allSlotsFilled() {
-        return cells().every((c) => c.querySelector(".frame-slot img"));
-      }
-
-      function updateDownloadState() {
-        downloadBtn.disabled = !allSlotsFilled();
+        return captures.every(Boolean);
       }
 
       function loadImage(src) {
@@ -377,115 +543,46 @@
         });
       }
 
-      async function buildCompositeBlob() {
-        const imgs = [];
-        for (const c of cells()) {
-          const im = c.querySelector(".frame-slot img");
-          if (!im) throw new Error("incomplete");
-          imgs.push(await loadImage(im.src));
-        }
-        // Respect per-layout export hints provided via data-attributes on `#editorRoot`.
-        const exportWidth = parseInt(root.dataset.exportWidth, 10) || 1200;
-        const exportHeight = parseInt(root.dataset.exportHeight, 10) || null;
-        const exportSliceH = parseInt(root.dataset.exportSliceH, 10) || 540;
-        // Per-layout padding (around photos) and gap (between photos)
-        const pad = parseInt(root.dataset.pad, 10) || 16;
-        const gap = parseInt(root.dataset.gap, 10) || 8;
-        const W = exportWidth;
-        let cw, ch;
+      // Draws the layout at exactly targetW × targetH; every photo fills (crops to) its cell
+      async function buildCompositeBlob(targetW, targetH) {
+        if (!allSlotsFilled()) throw new Error("incomplete");
+        const imgs = await Promise.all(captures.map(loadImage));
+        const pad = parseInt(root.dataset.pad, 10) || 0;
+        const gap = parseInt(root.dataset.gap, 10) || 0;
+        const cols = parseInt(root.dataset.cols, 10) || 1;
+        const rows = parseInt(root.dataset.rows, 10) || slotCount;
+        const cellW = (targetW - pad * 2 - gap * (cols - 1)) / cols;
+        const cellH = (targetH - pad * 2 - gap * (rows - 1)) / rows;
 
-        if (layoutKey === "strip-4" || layoutKey === "duo-2") {
-          // Compute slot width dynamically from image sizes so vertical strips don't
-          // end up with excessive horizontal padding. Start with a base slice height
-          // and compute the width each image would require when fit to that height.
-          const baseSliceH = exportSliceH || 540;
-          let slotW = exportWidth || 720;
-          imgs.forEach((img) => {
-            const candidateW = Math.round(img.width * (baseSliceH / img.height));
-            slotW = Math.max(slotW, candidateW);
-          });
-          slotW = Math.min(Math.max(320, slotW), Math.max(1200, exportWidth || 1200));
-          const displayHeights = imgs.map((img) => Math.round(img.height * (slotW / img.width)));
-          cw = slotW + pad * 2;
-          ch = pad * 2 + displayHeights.reduce((a, b) => a + b, 0) + gap * (imgs.length - 1);
-          compositeCanvas.width = cw;
-          compositeCanvas.height = ch;
-          const ctx = compositeCanvas.getContext("2d");
-          ctx.fillStyle = "#fcf6b9";
-          ctx.fillRect(0, 0, cw, ch);
-          let y = pad;
-          imgs.forEach((img, i) => {
-            const tw = slotW;
-            const th = displayHeights[i];
-            ctx.save();
-            clipRoundRect(ctx, pad, y, tw, th, 12);
-            const dw = slotW;
-            const dh = Math.round(img.height * (slotW / img.width));
-            ctx.drawImage(img, pad + Math.round((tw - dw) / 2), y + Math.round((th - dh) / 2), dw, dh);
-            ctx.restore();
-            y += th + gap;
-          });
-        } else if (layoutKey === "square-4" || layoutKey === "grid-6") {
-          const cols = 2;
-          const rows = layoutKey === "square-4" ? 2 : 3;
-          const cellW = (W - pad * 2 - (cols - 1) * gap) / cols;
-          const cellH = cellW;
-          cw = W;
-          ch = pad * 2 + rows * cellH + (rows - 1) * gap;
-          compositeCanvas.width = cw;
-          compositeCanvas.height = ch;
-          const ctx = compositeCanvas.getContext("2d");
-          ctx.fillStyle = "#fcf6b9";
-          ctx.fillRect(0, 0, cw, ch);
-          imgs.forEach((img, i) => {
-            const col = i % cols;
-            const row = Math.floor(i / cols);
-            const x = pad + col * (cellW + gap);
-            const y = pad + row * (cellH + gap);
-            ctx.save();
-            clipRoundRect(ctx, x, y, cellW, cellH, 12);
-            const scale = Math.min(cellW / img.width, cellH / img.height);
-            const dw = img.width * scale;
-            const dh = img.height * scale;
-            ctx.drawImage(img, x + (cellW - dw) / 2, y + (cellH - dh) / 2, dw, dh);
-            ctx.restore();
-          });
-        } else {
-          // Solo — padding around the photo (gap unused)
-          const img = imgs[0];
-          const maxH = 1600;
-          const innerW = Math.max(320, W - pad * 2);
-          const ratio = Math.min(innerW / img.width, maxH / img.height);
-          const iw = Math.round(img.width * ratio);
-          const ih = Math.round(img.height * ratio);
-          cw = iw + pad * 2;
-          ch = ih + pad * 2;
-          compositeCanvas.width = cw;
-          compositeCanvas.height = ch;
-          const ctx = compositeCanvas.getContext("2d");
-          ctx.fillStyle = "#fcf6b9";
-          ctx.fillRect(0, 0, cw, ch);
-          ctx.drawImage(img, pad, pad, iw, ih);
-        }
+        compositeCanvas.width = targetW;
+        compositeCanvas.height = targetH;
+        const ctx = compositeCanvas.getContext("2d");
+        ctx.fillStyle = "#fcf6b9";
+        ctx.fillRect(0, 0, targetW, targetH);
+
+        imgs.forEach((img, i) => {
+          const x = pad + (i % cols) * (cellW + gap);
+          const y = pad + Math.floor(i / cols) * (cellH + gap);
+          const scale = Math.max(cellW / img.width, cellH / img.height);
+          const dw = img.width * scale;
+          const dh = img.height * scale;
+          ctx.save();
+          clipRoundRect(ctx, x, y, cellW, cellH, 8);
+          ctx.drawImage(img, x + (cellW - dw) / 2, y + (cellH - dh) / 2, dw, dh);
+          ctx.restore();
+        });
 
         return new Promise((resolve) => {
           compositeCanvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.92);
         });
       }
 
-      document.querySelectorAll(".frame-slot").forEach((slot, index) => {
-        renderPlaceholder(slot, index);
-      });
-      setActiveSlot(0);
-      updateDownloadState();
-
       cells().forEach((cell, index) => {
-        const slot = cell.querySelector(".frame-slot");
         const input = cell.querySelector(".image-input");
         const uploadBtn = cell.querySelector(".upload-btn");
 
         cell.addEventListener("click", (e) => {
-          if (e.target.closest(".upload-btn")) return;
+          if (e.target.closest(".upload-btn") || countingDown) return;
           setActiveSlot(index);
           if (!stream) startCamera();
         });
@@ -501,7 +598,10 @@
           if (!file) return;
           const reader = new FileReader();
           reader.onload = (ev) => {
-            setSlotImage(slot, ev.target.result);
+            captures[index] = ev.target.result;
+            const next = nextEmptySlot();
+            if (next >= 0) activeSlotIndex = next;
+            render();
           };
           reader.readAsDataURL(file);
           input.value = "";
@@ -509,26 +609,19 @@
       });
 
       shutterBtn.addEventListener("click", async () => {
-        if (!stream) {
-          await startCamera();
-        }
+        if (!stream) await startCamera();
         if (!stream) return;
+        if (captures[activeSlotIndex]) captures[activeSlotIndex] = null;
+        render();
         runCountdownThenCapture();
       });
 
       resetBtn.addEventListener("click", () => {
         stopStream();
-        cells().forEach((cell, index) => {
-          const slot = cell.querySelector(".frame-slot");
-          renderPlaceholder(slot, index);
-        });
-        viewfinderIdle.classList.remove("hidden");
-        viewfinderIdle.innerHTML = `
-          <span class="material-symbols-outlined text-white/40 text-6xl">photo_camera</span>
-          <p class="text-white/60 font-label text-sm text-center px-6">Select a slot on the right, then tap the shutter</p>
-        `;
-        setActiveSlot(0);
-        updateDownloadState();
+        captures.fill(null);
+        cameraError = false;
+        activeSlotIndex = 0;
+        render();
       });
 
       switchCameraBtn.addEventListener("click", async () => {
@@ -536,18 +629,115 @@
         if (stream) await startCamera();
       });
 
-      downloadBtn.addEventListener("click", async () => {
+      document.getElementById("layoutSelect").addEventListener("change", (e) => {
+        window.location.search = "?layout=" + encodeURIComponent(e.target.value);
+      });
+
+      const sizeModal = document.getElementById("sizeModal");
+
+      function openSizeModal() {
+        sizeModal.classList.remove("hidden");
+      }
+
+      function closeSizeModal() {
+        sizeModal.classList.add("hidden");
+      }
+
+      downloadBtn.addEventListener("click", () => {
+        if (allSlotsFilled()) openSizeModal();
+      });
+
+      document.getElementById("sizeModalClose").addEventListener("click", closeSizeModal);
+      sizeModal.addEventListener("click", (e) => {
+        if (e.target === sizeModal) closeSizeModal();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeSizeModal();
+          closePreview();
+        }
+      });
+
+      function saveBlob(blob, sizeKey) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "scrapbook-" + layoutKey + "-" + sizeKey + "-" + new Date().toISOString().slice(0, 10) + ".jpg";
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      document.querySelectorAll(".size-option").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          try {
+            const blob = await buildCompositeBlob(parseInt(btn.dataset.width, 10), parseInt(btn.dataset.height, 10));
+            saveBlob(blob, btn.dataset.sizeKey);
+            closeSizeModal();
+          } catch (err) {
+            console.error(err);
+          }
+        });
+      });
+
+      const previewModal = document.getElementById("previewModal");
+      const previewImage = document.getElementById("previewImage");
+      const previewLoading = document.getElementById("previewLoading");
+      const previewSizes = [...document.querySelectorAll(".preview-size")];
+      let previewBlob = null;
+      let previewUrl = null;
+      let previewSize = previewSizes[0];
+      let previewRequest = 0;
+
+      async function renderPreview(btn) {
+        previewSize = btn;
+        previewSizes.forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle("border-primary", on);
+          b.classList.toggle("bg-primary", on);
+          b.classList.toggle("text-white", on);
+          b.classList.toggle("text-on-surface-variant", !on);
+        });
+        const request = ++previewRequest;
+        previewBlob = null;
+        previewImage.classList.add("hidden");
+        previewLoading.textContent = "Rendering…";
+        previewLoading.classList.remove("hidden");
         try {
-          const blob = await buildCompositeBlob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "scrapbook-" + layoutKey + "-" + new Date().toISOString().slice(0, 10) + ".jpg";
-          a.click();
-          URL.revokeObjectURL(url);
+          const blob = await buildCompositeBlob(parseInt(btn.dataset.width, 10), parseInt(btn.dataset.height, 10));
+          if (request !== previewRequest) return;
+          if (previewUrl) URL.revokeObjectURL(previewUrl);
+          previewBlob = blob;
+          previewUrl = URL.createObjectURL(blob);
+          previewImage.src = previewUrl;
+          previewImage.classList.remove("hidden");
+          previewLoading.classList.add("hidden");
         } catch (err) {
           console.error(err);
+          previewLoading.textContent = "Couldn't render the preview.";
         }
+      }
+
+      function openPreview() {
+        if (!allSlotsFilled()) return;
+        previewModal.classList.remove("hidden");
+        renderPreview(previewSize);
+      }
+
+      function closePreview() {
+        previewModal.classList.add("hidden");
+      }
+
+      document.getElementById("previewBtn").addEventListener("click", openPreview);
+      document.getElementById("previewClose").addEventListener("click", closePreview);
+      document.getElementById("previewCancel").addEventListener("click", closePreview);
+      previewModal.addEventListener("click", (e) => {
+        if (e.target === previewModal) closePreview();
+      });
+      previewSizes.forEach((btn) => btn.addEventListener("click", () => renderPreview(btn)));
+      document.getElementById("previewDownload").addEventListener("click", () => {
+        if (!previewBlob) return;
+        saveBlob(previewBlob, previewSize.dataset.sizeKey);
+        closePreview();
       });
 
       shareBtn.addEventListener("click", async () => {
@@ -556,13 +746,12 @@
           return;
         }
         try {
-          const blob = await buildCompositeBlob();
-          if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], "layout.jpg", { type: "image/jpeg" })] })) {
-            const file = new File([blob], "scrapbook-layout.jpg", { type: "image/jpeg" });
+          const blob = await buildCompositeBlob(1200, 1800);
+          const file = new File([blob], "scrapbook-layout.jpg", { type: "image/jpeg" });
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({ files: [file], title: "{{ layout.title|escapejs }}" });
           } else {
-            const url = URL.createObjectURL(blob);
-            window.open(url, "_blank");
+            window.open(URL.createObjectURL(blob), "_blank");
           }
         } catch (e) {
           console.error(e);
@@ -570,8 +759,10 @@
       });
 
       document.getElementById("gridHintBtn").addEventListener("click", () => {
-        alert("Layout: {{ layout.title|escapejs }} — {{ layout.slots }} photo(s). Tap a slot, then shutter.");
+        alert("Layout: {{ layout.title|escapejs }} — {{ layout.slots }} photo(s). Tap a slot, then the shutter.");
       });
+
+      render();
     })();
   </script>
 </body>

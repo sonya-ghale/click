@@ -1,10 +1,10 @@
-{# Solo Star — single portrait. Own pad/gap: see layout.pad / layout.gap #}
+{# Solo Star — one camera filling the screen #}
 <div
   id="slotsContainer"
-  class="flex flex-col bg-surface-container rounded-xl"
-  style="gap: {{ layout.preview_gap }}px; padding: {{ layout.preview_pad }}px;"
+  class="grid grid-cols-1 grid-rows-1 w-full h-full"
+  style="gap: {{ layout.gap }}px; padding: {{ layout.pad }}px;"
 >
   {% for i in layout.indexes %}
-    {% include "frame/partials/slot.html" with index=forloop.counter0 cell_class="min-h-[200px] w-full" %}
+    {% include "frame/partials/slot.html" with index=forloop.counter0 total=layout.slots %}
   {% endfor %}
 </div>

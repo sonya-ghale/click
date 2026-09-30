@@ -1,10 +1,10 @@
-{# Photo Strip — 4 vertical frames. Own pad/gap: see layout.pad / layout.gap #}
+{# Photo Strip — 4 wide frames stacked vertically, same shape as the layout card #}
 <div
   id="slotsContainer"
-  class="flex flex-col bg-surface-container rounded-xl"
-  style="gap: {{ layout.preview_gap }}px; padding: {{ layout.preview_pad }}px;"
+  class="grid grid-cols-1 grid-rows-4 h-full max-w-full mx-auto aspect-[9/10]"
 >
+  <!-- style="gap: {{ layout.gap }}px; padding: {{ layout.pad }}px;" -->
   {% for i in layout.indexes %}
-    {% include "frame/partials/slot.html" with index=forloop.counter0 cell_class="aspect-square" %}
+    {% include "frame/partials/slot.html" with index=forloop.counter0 total=layout.slots %}
   {% endfor %}
 </div>
